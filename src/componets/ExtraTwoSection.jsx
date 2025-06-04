@@ -10,9 +10,9 @@ const ExtraSectionTwo = () => {
     >
       <h3 className="text-xl font-semibold mb-3">Why Use WhereIsIt?</h3>
       <div className="grid md:grid-cols-3 gap-4">
-        <div className="p-4 bg-white rounded shadow text-center">🔎 Smart Search</div>
-        <div className="p-4 bg-white rounded shadow text-center">📍 Location-based Filtering</div>
-        <div className="p-4 bg-white rounded shadow text-center">✅ Verified Posts</div>
+        <div className="p-4 bg-white rounded shadow text-center"> Smart Search</div>
+        <div className="p-4 bg-white rounded shadow text-center"> Location-based Filtering</div>
+        <div className="p-4 bg-white rounded shadow text-center"> Verified Posts</div>
       </div>
     </motion.section>
   );

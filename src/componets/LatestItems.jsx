@@ -17,14 +17,7 @@ const LatestItems = () => {
 
   return (
     <section className="px-4 md:px-8">
-      <motion.h2
-        className="text-2xl md:text-4xl font-bold text-center mb-6"
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        Latest Lost & Found Items
-      </motion.h2>
+     
 
       <div className="grid md:grid-cols-3 gap-6">
         {items.map((item) => (
@@ -43,8 +36,8 @@ const LatestItems = () => {
         ))}
       </div>
 
-      <div className="text-center mt-6">
-        <Link to="/allItems">
+      <div className="text-center -mt-6">
+        <Link to="/allrecoverd">
           <button className="btn bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
             See All
           </button>
