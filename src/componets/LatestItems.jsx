@@ -37,7 +37,7 @@ const LatestItems = () => {
       </div>
 
       <div className="text-center -mt-6">
-        <Link to="/allrecoverd">
+        <Link to="/lostpages">
           <button className="btn bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
             See All
           </button>

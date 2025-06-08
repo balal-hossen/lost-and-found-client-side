@@ -7,18 +7,20 @@ import MainLayout from '../MainLayout/MainLayout';
 import Home from '../MainLayout/Home';
 import Register from '../ScoileLink/Register';
 import SignIn from '../ScoileLink/SignIn';
-import ErrorPages from '../ScoileLink/ErrorPages';
+//import ErrorPages from '../ScoileLink/ErrorPages';
 import PrivetsRoutes from '../PrivetsRoutes';
 import AddLost from '../profiledropdown/AddLost';
 import AllRecovered from '../profiledropdown/AllRecovered';
 import ManageMyItem from '../profiledropdown/ManageMyItem';
 import LostFoundPages from '../Pages/LostFoundPages';
+import ItemDetails from '../Pages/ItemDetails';
+import UpdateItem from '../profiledropdown/UpdateItem';
 
 const Router = createBrowserRouter([
   {
     path: '/',
    Component:MainLayout,
-   errorElement:ErrorPages,
+  
    children:[
     {
         index:true,
@@ -36,9 +38,21 @@ element:<PrivetsRoutes><AllRecovered/></PrivetsRoutes>
 path:'manage',
 element:<PrivetsRoutes><ManageMyItem/></PrivetsRoutes>
     },
+    
+{
+  path: '/updateItems/:id',
+element:<PrivetsRoutes><UpdateItem></UpdateItem></PrivetsRoutes>,
+  loader: ({ params }) => fetch(`http://localhost:5000/items/${params.id}`)
+},
+   
+
     {
 path:'lostpages',
-element:<PrivetsRoutes><LostFoundPages/></PrivetsRoutes>
+element:<PrivetsRoutes><LostFoundPages></LostFoundPages></PrivetsRoutes>
+    },
+    {
+path:'/itemdetail/:id',
+Component:ItemDetails
     },
     {
         path:'register',

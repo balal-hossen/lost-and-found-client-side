@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
-
-import { Authcontex } from '../AuthContext';
+import { Authcontex } from "../AuthContext";
 import { Link, NavLink } from 'react-router';
 
 const Navbar = () => {
@@ -71,7 +70,7 @@ const Navbar = () => {
         <div className="navbar-end flex items-center gap-4">
           {user ? (
             <>
-              {/* ✅ Profile Image with Tooltip */}
+              {/*  Profile Image with Tooltip */}
               {user.photoURL && (
                 <div
                   className="tooltip tooltip-bottom"
