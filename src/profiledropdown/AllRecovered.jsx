@@ -12,7 +12,9 @@ const AllRecovered = () => {
     if (!user?.email) return;
 
     axios
-      .get(`http://localhost:5000/recovered?email=${user.email}`)
+      .get(`http://localhost:5000/recovered?email=${user.email}`,{
+        withCredentials:'include'
+      })
       .then((res) => {
         console.log("Recovered data:", res.data);
         setRecoveredItems(res.data);
@@ -37,7 +39,7 @@ const AllRecovered = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto mt-10 px-4">
+    <div className="max-w-6xl mx-auto mt-10 px-4 my-20">
       <h2 className="text-2xl font-bold mb-4 text-center">My Recovered Items</h2>
 
       <div className="text-center mb-6">
@@ -50,7 +52,7 @@ const AllRecovered = () => {
       </div>
 
       {isTableView ? (
-        // ✅ Table Layout
+        //  Table Layout
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border text-black rounded shadow">
             <thead className="bg-blue-100">
@@ -74,7 +76,7 @@ const AllRecovered = () => {
           </table>
         </div>
       ) : (
-        // ✅ Card Layout (3-column grid)
+        //  Card Layout (3-column grid)
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {recoveredItems.map((item) => (
             <div

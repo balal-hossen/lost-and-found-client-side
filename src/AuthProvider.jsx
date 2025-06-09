@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut} from 'firebase/auth';
 import { Authcontex } from './AuthContext';
 import { auth } from './firebase.config';
+import axios from 'axios';
 
 
 const AuthProvider = ({children}) => {
@@ -27,8 +28,20 @@ const signout=()=>{
  useEffect(()=>{
     const unSubscribe=onAuthStateChanged(auth,currentUSer=>{
         console.log('current User site useEffet on auth state chang',currentUSer)//user handle korar jonno mane refreashdileo jeno user na jay chole
-        setUser(currentUSer)     
-     setLoading(false) 
+        setUser(currentUSer)
+        
+        //post required for jwt using user email
+        //api end-point :/jwt(post method)
+       if (currentUSer && currentUSer.email) {
+  axios.post('http://localhost:5000/jwt', { email: currentUSer.email }, { withCredentials: true })
+    .then(res=> {
+      console.log('JWT set!',res);
+    })
+    .catch(err => {
+      console.error('JWT error:', err);
+    });
+}
+setLoading(false) 
      /////////////💞💞💞💞💞💞jwt  token releted api💞💞💞💞💞///////////
 
     /*  if(currentUSer?.email){
