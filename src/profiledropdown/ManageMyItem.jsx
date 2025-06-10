@@ -3,18 +3,36 @@ import Swal from "sweetalert2";
 import { Authcontex } from "../AuthContext";
 import { Link } from "react-router";
 
+
 const ManageMyItem = () => {
   const { user } = useContext(Authcontex);
   const [myItems, setMyItems] = useState([]);
 
   const fetchMyItems = () => {
-    fetch(`http://localhost:5000/items?email=${user?.email}`)
+    fetch(`http://localhost:5000/items?email=${user?.email}`, {
+      credentials: 'include',
+    })
       .then(res => res.json())
-      .then(data => setMyItems(data));
+      .then(data => {
+        console.log("Fetched Items:", data);
+        if (Array.isArray(data)) {
+          setMyItems(data);
+        } else if (Array.isArray(data?.data)) {
+          setMyItems(data.data);
+        } else {
+          setMyItems([]); // fallback empty
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching items:", err);
+        setMyItems([]); // fallback
+      });
   };
 
   useEffect(() => {
-    if (user?.email) fetchMyItems();
+    if (user?.email) {
+      fetchMyItems();
+    }
   }, [user]);
 
   const handleDelete = (id) => {
@@ -23,11 +41,11 @@ const ManageMyItem = () => {
       text: "This item will be permanently deleted!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(`http://localhost:5000/items/${id}`, {
-          method: "DELETE"
+          method: "DELETE",
         })
           .then(res => res.json())
           .then(data => {
@@ -49,7 +67,7 @@ const ManageMyItem = () => {
         <div className="overflow-x-auto">
           <table className="table-auto w-full border">
             <thead>
-              <tr className="bg-gray-200  text-black">
+              <tr className="bg-gray-200 text-black">
                 <th className="px-4 py-2">Title</th>
                 <th className="px-4 py-2">Category</th>
                 <th className="px-4 py-2">Status</th>
@@ -68,7 +86,12 @@ const ManageMyItem = () => {
                     <Link to={`/updateItems/${item._id}`}>
                       <button className="bg-blue-500 text-white px-3 py-1 rounded">Update</button>
                     </Link>
-                    <button onClick={() => handleDelete(item._id)} className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
+                    <button
+                      onClick={() => handleDelete(item._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

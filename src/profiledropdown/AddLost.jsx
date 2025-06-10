@@ -26,11 +26,13 @@ const AddLost = () => {
     };
 
     try {
-      const res = await axios.post("http://localhost:5000/items", itemData);
+      const res = await axios.post("http://localhost:5000/items", itemData,{
+        withCredentials:'include'
+      });
       if (res.data.insertedId) {
         
 Swal.fire({
-  title: "Drag me!",
+  title: "Add Items!",
   icon: "success",
   draggable: true
 });

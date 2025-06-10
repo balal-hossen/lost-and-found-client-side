@@ -30,32 +30,20 @@ const signout=()=>{
         console.log('current User site useEffet on auth state chang',currentUSer)//user handle korar jonno mane refreashdileo jeno user na jay chole
         setUser(currentUSer)
         
-        //post required for jwt using user email
-        //api end-point :/jwt(post method)
-       if (currentUSer && currentUSer.email) {
-  axios.post('http://localhost:5000/jwt', { email: currentUSer.email }, { withCredentials: true })
-    .then(res=> {
-      console.log('JWT set!',res);
-    })
-    .catch(err => {
-      console.error('JWT error:', err);
-    });
-}
-setLoading(false) 
+        
+     
+       setLoading(false) 
      /////////////💞💞💞💞💞💞jwt  token releted api💞💞💞💞💞///////////
 
-    /*  if(currentUSer?.email){
-        const userData={email:currentUSer.email}
-        axios.post('http://localhost:5000/jwt',userData)
-        .then(res=>{
-            console.log('token after jwt',res.data)
-const token=res.data.token;;
-localStorage.setItem('token', token)
-        })
-        .catch(err=>{
-            console.log(err)
-        })
-     } */
+     if (currentUSer && currentUSer.email) {
+        axios.post('http://localhost:5000/jwt', { email: currentUSer.email }, { withCredentials: true })
+       .then(res=> {
+        console.log('JWT set!',res);
+         })
+        .catch(err => {
+         console.error('JWT error:', err);
+        });
+     }
      /////////💞💞💞💞💞💞jwt  token releted api💞💞💞💞💞///////////
 
      
