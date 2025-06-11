@@ -5,6 +5,7 @@ import { Link, NavLink } from 'react-router';
 const Navbar = () => {
   const { user, signout } = useContext(Authcontex);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  console.log('user image',user)
 
   const handleSignOut = () => {
     signout()

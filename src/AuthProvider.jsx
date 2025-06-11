@@ -1,73 +1,78 @@
+// AuthProvider.jsx (অংশ)
+
 import React, { useEffect, useState } from 'react';
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut} from 'firebase/auth';
-import { Authcontex } from './AuthContext';
+import { 
+  createUserWithEmailAndPassword, 
+  onAuthStateChanged, 
+  signInWithEmailAndPassword, 
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup
+} from 'firebase/auth';
+
 import { auth } from './firebase.config';
 import axios from 'axios';
+import { Authcontex } from './AuthContext';
 
+const AuthProvider = ({ children }) => {
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
-const AuthProvider = ({children}) => {
+  const create = (email, password) => {
+    setLoading(true);
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
 
+  const signin = (email, password) => {
+    setLoading(true);
+    return signInWithEmailAndPassword(auth, email, password);
+  };
 
-const [loading,setLoading]=useState(true)//atar kaj hosce privet routes set korar jonno
-const [user,setUser]=useState(null)
+  const signout = () => {
+    setLoading(true);
+    return signOut(auth);
+  };
 
-const create=(email,password)=>{
-    setLoading(true) 
-    return createUserWithEmailAndPassword(auth,email,password)///regiseter
-}
-const signin=(email,password)=>{
-     setLoading(true) 
-    return signInWithEmailAndPassword(auth,email,password)
-}
+  const googleProvider = new GoogleAuthProvider();
+  const signInWithGoogle = () => {
+    setLoading(true);
+    return signInWithPopup(auth, googleProvider);
+  };
 
-const signout=()=>{
-    setLoading(true) 
-    return signOut(auth)
-}
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
 
- useEffect(()=>{
-    const unSubscribe=onAuthStateChanged(auth,currentUSer=>{
-        console.log('current User site useEffet on auth state chang',currentUSer)//user handle korar jonno mane refreashdileo jeno user na jay chole
-        setUser(currentUSer)
-        
-        
-     
-       setLoading(false) 
-     /////////////💞💞💞💞💞💞jwt  token releted api💞💞💞💞💞///////////
+      if (currentUser && currentUser.email) {
+        axios.post('http://localhost:5000/jwt', { email: currentUser.email }, { withCredentials: true })
+          .then(res => {
+            console.log('JWT set!', res);
+          })
+          .catch(err => {
+            console.error('JWT error:', err);
+          });
+      }
+    });
 
-     if (currentUSer && currentUSer.email) {
-        axios.post('http://localhost:5000/jwt', { email: currentUSer.email }, { withCredentials: true })
-       .then(res=> {
-        console.log('JWT set!',res);
-         })
-        .catch(err => {
-         console.error('JWT error:', err);
-        });
-     }
-     /////////💞💞💞💞💞💞jwt  token releted api💞💞💞💞💞///////////
+    return () => unsubscribe();
+  }, []);
 
-     
-    })
-    return ()=>{
-        unSubscribe();
-    }
-},[]) 
-
-
-const userIng={
-   user,
-   setUser,
- 
-   loading,
+  const userInfo = {
+    user,
+    setUser,
+    loading,
     create,
     signin,
-    signout
-}
-    return (
-        <Authcontex value={userIng}>
-            {children}
-        </Authcontex>
-    );
+    signout,
+    signInWithGoogle,
+  };
+
+  return (
+    <Authcontex value={userInfo}>
+        {children}
+    </Authcontex>
+  );
 };
 
 export default AuthProvider;
