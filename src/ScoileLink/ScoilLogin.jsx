@@ -16,9 +16,9 @@ const ScoilLogin = () => {
         Swal.fire('Login Successful!', 'Welcome back!', 'success');
         navigate(from, { replace: true });
       })
-     /*  .catch((error) => {
+      .catch((error) => {
         Swal.fire('Login Failed', error.message, 'error');
-      }); */
+      });
   };
 
   return (

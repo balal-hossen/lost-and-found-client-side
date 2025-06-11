@@ -15,12 +15,13 @@ import ManageMyItem from '../profiledropdown/ManageMyItem';
 import LostFoundPages from '../Pages/LostFoundPages';
 import ItemDetails from '../Pages/ItemDetails';
 import UpdateItem from '../profiledropdown/UpdateItem';
+import ErrorPages from '../ScoileLink/ErrorPages';
 
 const Router = createBrowserRouter([
   {
     path: '/',
    Component:MainLayout,
-  
+  errorElement:<ErrorPages/>,
    children:[
     {
         index:true,
@@ -63,6 +64,7 @@ Component:ItemDetails
         Component:SignIn
     }
    ]
+   
   },
   
 ]);

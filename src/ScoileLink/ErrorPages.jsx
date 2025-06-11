@@ -1,6 +1,6 @@
 // src/pages/error/ErrorPage.jsx
 
-import { useRouteError } from "react-router";
+import { Link, useRouteError } from "react-router";
 
 
 
@@ -13,6 +13,7 @@ const ErrorPages = () => {
       <h1 className="text-3xl font-bold text-red-500">404 - Not Found</h1>
       <p className="text-lg mt-4">এই পেজটি খুঁজে পাওয়া যায়নি!</p>
       <p className="mt-2 text-sm text-gray-500">{error.statusText || error.message}</p>
+      <Link to='/'><button className="btn">Back To Home Pages</button></Link>
     </div>
   );
 };

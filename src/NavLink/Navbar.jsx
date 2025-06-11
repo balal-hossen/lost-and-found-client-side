@@ -1,16 +1,16 @@
 import React, { useContext, useState } from 'react';
 import { Authcontex } from "../AuthContext";
 import { Link, NavLink } from 'react-router';
+import logo from '../assets/image/download.png'
+import Logo from './Logo';
 
 const Navbar = () => {
   const { user, signout } = useContext(Authcontex);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log('user image',user)
 
   const handleSignOut = () => {
     signout()
       .then(() => {
-        console.log('Sign out successful');
         setIsModalOpen(false);
       })
       .catch(error => {
@@ -33,8 +33,6 @@ const Navbar = () => {
               : "text-gray-700 font-bold block py-2"}>
             Lost & Found Items Pages 
           </NavLink>
-          
-        
         </>
       )}
     </div>
@@ -42,7 +40,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="navbar bg-base-100 shadow-sm">
+      <div className="navbar bg-base-100 shadow-sm top-0 z-50 sticky">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -59,19 +57,19 @@ const Navbar = () => {
               {Links}
             </ul>
           </div>
-          <Link to="/" className="btn btn-ghost text-xl">Lost and Found</Link>
+          <Link to="/" className="btn btn-ghost normal-case text-xl flex items-center gap-2">
+            <img src={logo} alt="Site Logo" className="w-8 h-8 rounded-md" />
+            <Logo />
+          </Link>
         </div>
 
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">{Links}</ul>
         </div>
 
-
-
         <div className="navbar-end flex items-center gap-4">
           {user ? (
             <>
-              {/*  Profile Image with Tooltip */}
               {user.photoURL && (
                 <div
                   className="tooltip tooltip-bottom"
@@ -86,7 +84,6 @@ const Navbar = () => {
                 </div>
               )}
 
-              {/* Sign Out Button */}
               <button onClick={handleSignOut} className="btn btn-sm btn-error">
                 Sign Out
               </button>
@@ -100,8 +97,12 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/*  Right Side Sidebar Modal */}
-      <div className={`fixed top-0 right-0 h-full w-72 bg-white shadow-lg p-6 z-50 transform transition-transform duration-300 ${isModalOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      {/* Responsive Right Side Sidebar Modal */}
+      <div
+        className={`fixed top-0 right-0 h-full bg-white shadow-lg p-6 z-50 overflow-y-auto transform transition-transform duration-300
+          ${isModalOpen ? 'translate-x-0' : 'translate-x-full'}
+          w-full max-w-xs lg:w-72`}
+      >
         <button
           onClick={() => setIsModalOpen(false)}
           className="absolute top-3 right-4 text-2xl text-gray-500 hover:text-black"
@@ -118,24 +119,25 @@ const Navbar = () => {
             />
             <h2 className="text-xl text-black font-bold text-center">{user.displayName || "No Name"}</h2>
             <p className="text-center text-sm text-gray-600 mb-6">{user.email}</p>
-          <div className='space-y-3.5'>
+
+            <div className="space-y-3.5">
               <Link to='/addlost'>
-            <button className='btn'>Add Lost& Found Item  </button>
-            </Link>
-            <Link to='/allrecoverd'>
-            <button className='btn mt-2'>All Recovered Iteme  </button>
-            </Link>
-            <Link to='/manage'>
-            <button className='btn mt-2'>Manage My Items   </button>
-            </Link>
-          </div>
+                <button className='btn w-full'>Add Lost & Found Item</button>
+              </Link>
+              <Link to='/allrecoverd'>
+                <button className='btn w-full mt-2'>All Recovered Items</button>
+              </Link>
+              <Link to='/manage'>
+                <button className='btn w-full mt-2'>Manage My Items</button>
+              </Link>
+            </div>
 
             <button
               onClick={handleSignOut}
-              className="btn mt-2 btn-error w-full">
+              className="btn mt-4 btn-error w-full"
+            >
               Logout
             </button>
-
           </>
         )}
       </div>
