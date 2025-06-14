@@ -14,7 +14,10 @@ const LostFoundPages = () => {
     if (user?.email) {
       axios
         .get(`http://localhost:5000/items?email=${user.email}`, {
-          withCredentials: true,
+       /*    withCredentials: true,
+     headers:{
+           authorizations:`Brarer ${user.accessToken}`
+     } */
         })
         .then((res) => {
           setAllItems(res.data);
