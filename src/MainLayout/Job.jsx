@@ -4,12 +4,13 @@ const Job = () => {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/items')
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/items`)
       .then(res => res.json())
       .then(data => {
-        console.log("Fetched jobs:", data); // এখানে দেখো সব আসছে কিনা
+        console.log("Fetched jobs:", data);
         setJobs(data);
-      });
+      })
+      .catch(err => console.error("Failed to fetch jobs:", err));
   }, []);
 
   return (

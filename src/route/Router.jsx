@@ -43,7 +43,7 @@ element:<PrivetsRoutes><ManageMyItem/></PrivetsRoutes>
 {
   path: '/updateItems/:id',
 element:<PrivetsRoutes><UpdateItem></UpdateItem></PrivetsRoutes>,
-  loader: ({ params }) => fetch(`http://localhost:5000/items/${params.id}`)
+  loader: ({ params }) => fetch(`${import.meta.env.vite_api_url}/items/${params.id}`)
 },
    
 

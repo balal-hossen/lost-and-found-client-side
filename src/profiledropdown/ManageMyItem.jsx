@@ -9,9 +9,7 @@ const ManageMyItem = () => {
   const [myItems, setMyItems] = useState([]);
 
   const fetchMyItems = () => {
-    fetch(`http://localhost:5000/items?email=${user?.email}`, {
-      credentials: "include",
-    })
+    fetch(`http://localhost:5000/items?email=${user?.email}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {

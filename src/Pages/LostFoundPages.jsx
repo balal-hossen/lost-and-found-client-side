@@ -13,12 +13,7 @@ const LostFoundPages = () => {
   useEffect(() => {
     if (user?.email) {
       axios
-        .get(`http://localhost:5000/items?email=${user.email}`, {
-       /*    withCredentials: true,
-     headers:{
-           authorizations:`Brarer ${user.accessToken}`
-     } */
-        })
+        .get(`http://localhost:5000/items?email=${user.email}`)
         .then((res) => {
           setAllItems(res.data);
         })

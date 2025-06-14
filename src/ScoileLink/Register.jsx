@@ -1,16 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import groovyWalkAnimation from '../../src/assets/register.json.json';
 import Lottie from 'lottie-react';
 import { Authcontex } from '../AuthContext';
 import { updateProfile } from 'firebase/auth';
 import ScoilLogin from './ScoilLogin';
-
+import { FaRegEye } from "react-icons/fa6";
+import { FaRegEyeSlash } from "react-icons/fa6";
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router';
 
 const Register = () => {
   const { create } = useContext(Authcontex);
   const navigate = useNavigate(); // navigation for after register
+   const [showPassword, setShowPassword] = useState(false);
 
   const handleReg = (e) => {
     e.preventDefault();
@@ -66,8 +68,31 @@ const Register = () => {
                 <label className="label">Email</label>
                 <input type="email" name="email" className="input" placeholder="Email" required />
                 <label className="label">Password</label>
-                <input type="password" name="password" className="input" placeholder="Password" required />
-                <button className="btn btn-neutral mt-4" type="submit">Register</button>
+               <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            required
+            minLength="6"
+            pattern="(?=.*[a-z])(?=.*[A-Z]).{6,}"
+            title="Must contain at least 6 characters with uppercase and lowercase"
+            className="w-full px-3 py-2 border rounded"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute top-2.5 right-3 text-gray-600"
+          >
+            {showPassword ?<FaRegEyeSlash /> : <FaRegEye />}
+          </button>
+        </div>
+          <button
+          type="submit"
+          className="bg-green-500 text-white py-2 px-4 rounded w-full mt-4 hover:bg-green-600"
+        >
+          Register
+        </button>
               </fieldset>
             </form>
             <ScoilLogin />

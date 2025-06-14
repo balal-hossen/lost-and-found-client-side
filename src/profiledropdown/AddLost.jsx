@@ -26,9 +26,7 @@ const AddLost = () => {
     };
 
     try {
-      const res = await axios.post("http://localhost:5000/items", itemData,{
-        withCredentials:'include'
-      });
+      const res = await axios.post("http://localhost:5000/items", itemData);
       if (res.data.insertedId) {
         
 Swal.fire({
