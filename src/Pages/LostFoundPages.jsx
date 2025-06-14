@@ -8,6 +8,7 @@ const LostFoundPages = () => {
   const [allItems, setAllItems] = useState([]);
   const navigate = useNavigate();
   const { user } = useContext(Authcontex);
+  console.log('token firebase token',user.accessToken)
 
   useEffect(() => {
     if (user?.email) {
