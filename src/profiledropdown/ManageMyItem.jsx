@@ -3,13 +3,15 @@ import Swal from "sweetalert2";
 import { Authcontex } from "../AuthContext";
 import { Link } from "react-router";
 
-
 const ManageMyItem = () => {
   const { user } = useContext(Authcontex);
   const [myItems, setMyItems] = useState([]);
 
   const fetchMyItems = () => {
-    fetch(`http://localhost:5000/items?email=${user?.email}`)
+    fetch(`https://lost-and-found-hazel.vercel.app/items?email=${user?.email}`, {
+      method: "GET",
+      credentials: "include", // JWT Cookie 
+    })
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -41,8 +43,9 @@ const ManageMyItem = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/items/${id}`, {
+        fetch(`https://lost-and-found-hazel.vercel.app/items/${id}`, {
           method: "DELETE",
+          credentials: "include", // Cookie
         })
           .then((res) => res.json())
           .then((data) => {
@@ -69,7 +72,7 @@ const ManageMyItem = () => {
         <p className="text-center text-gray-500">You haven’t added any items yet.</p>
       ) : (
         <>
-          {/* বড় স্ক্রীনে টেবিল */}
+          {/* big screen */}
           <div className="hidden md:block overflow-x-auto rounded shadow-md">
             <table className="table-auto w-full border-collapse border border-gray-300">
               <thead>
@@ -114,7 +117,7 @@ const ManageMyItem = () => {
             </table>
           </div>
 
-          {/* মোবাইলে কার্ড ভিউ */}
+          {/* mobile */}
           <div className="md:hidden grid gap-4">
             {myItems.map((item) => (
               <div

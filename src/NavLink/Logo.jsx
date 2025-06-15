@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Typewriter } from 'react-simple-typewriter';
-
+import logo from '../assets/image/download.png'
 const Logo = () => {
   const name = "WhereIsIt";
   const colors = ["#FF6B6B", "#4ECDC4", "#FFD93D", "#6A67CE", "#F67280", "#2EC4B6", "#FF9F1C", "#3D348B", "#EF476F"];
@@ -13,9 +13,9 @@ const Logo = () => {
       transition={{ duration: 1 }}
       className="text-2xl font-bold tracking-wide flex items-center gap-2"
     >
-      <span className="hidden lg:inline-block w-8 h-8">
-        {/* তুমি চাইলে এখানে কোন logo icon দিতে পারো */}
-        📦
+      <span className=" lg:inline-block w-8 h-8">
+
+          <img src={logo} alt="Site Logo" className="w-8 h-8 rounded-md hidden lg:block md:block" />
       </span>
 
       <Typewriter
@@ -29,7 +29,7 @@ const Logo = () => {
       />
 
       {/* আলাদা রঙের letter এক এক করে animate করা */}
-      <div className="flex gap-1 ml-4">
+      <div className="flex gap-1  ml-4">
         {name.split("").map((char, index) => (
           <motion.span
             key={index}

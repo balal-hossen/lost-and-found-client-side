@@ -26,7 +26,9 @@ const AddLost = () => {
     };
 
     try {
-      const res = await axios.post("http://localhost:5000/items", itemData);
+      const res = await axios.post("https://lost-and-found-hazel.vercel.app/items", itemData,{
+        withCredentials: true
+      });
       if (res.data.insertedId) {
         
 Swal.fire({
@@ -42,7 +44,7 @@ Swal.fire({
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 text-black bg-white shadow-md rounded">
+    <div className="max-w-2xl mt-10 mx-auto p-6 text-black bg-white shadow-md rounded">
       <h2 className="text-2xl font-bold mb-4">Add Lost or Found Item</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <select {...register("postType")} className="w-full border p-2 rounded" required>

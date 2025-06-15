@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 
 const UpdateItem = () => {
   const item = useLoaderData();
+  console.log(item)
   const navigate = useNavigate();
 
   const handleUpdate = (e) => {
@@ -19,7 +20,7 @@ const UpdateItem = () => {
       name: form.name.value
     };
 
-    fetch(`http://localhost:5000/items/${item._id}`, {
+    fetch(`https://lost-and-found-hazel.vercel.app/items/${item._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"

@@ -49,7 +49,7 @@ const BannerSlider = () => {
   const { img, title, subtitle, animation } = slides[current];
 
   return (
-    <div className="relative w-full h-[500px] overflow-hidden rounded-xl shadow-md">
+    <div className="relative  border-red-500 w-full h-[500px] overflow-hidden rounded-xl shadow-md">
       <img
         src={img}
         alt="Banner"

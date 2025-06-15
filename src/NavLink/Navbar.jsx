@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Authcontex } from "../AuthContext";
 import { Link, NavLink } from 'react-router';
-import logo from '../assets/image/download.png'
+//import logo from '../assets/image/download.png'
 import Logo from './Logo';
 
 const Navbar = () => {
@@ -19,24 +19,37 @@ const Navbar = () => {
   };
 
   const Links = (
-    <div className="gap-6 lg:flex">
-      <NavLink to="/" className={({ isActive }) =>
-        isActive ? "text-blue-600 font-semibold underline block py-2"
-          : "text-gray-700 font-bold block py-2"}>
-        Home
-      </NavLink>
+  <div className="gap-2 lg:flex text-white flex flex-col lg:flex-row">
+    <NavLink to="/" className={({ isActive }) =>
+      isActive ? "text-blue-600 font-bold underline block py-2"
+        : "text-gray-700 font-bold block py-2"}>
+     <span className='lg:text-2xl'> Home</span>
+    </NavLink>
 
-      {user && (
-        <>
-          <NavLink to="/lostpages" className={({ isActive }) =>
-            isActive ? "text-blue-600 font-semibold underline block py-2"
-              : "text-gray-700 font-bold block py-2"}>
-            Lost & Found Items Pages 
-          </NavLink>
-        </>
-      )}
-    </div>
-  );
+    {user && (
+      <>
+        <NavLink to="/lostpages" className={({ isActive }) =>
+          isActive ? "text-blue-600 font-bold underline block py-2"
+            : "text-gray-700 font-bold block py-2"}>
+         <span className='lg:text-2xl'>Lost & Found Items Pages</span>
+        </NavLink>
+
+        <div className="flex items-center gap-2 lg:hidden  ml-6">
+          {user.photoURL && (
+            <img
+              src={user.photoURL}
+              alt="User"
+              onClick={() => setIsModalOpen(true)}
+              className="w-8 h-8 ml-12 rounded-full border border-gray-300  md:hidden cursor-pointer"
+            />
+          )}
+        
+        </div>
+      </>
+    )}
+  </div>
+);
+
 
   return (
     <>
@@ -57,13 +70,15 @@ const Navbar = () => {
               {Links}
             </ul>
           </div>
-          <Link to="/" className="btn btn-ghost normal-case text-xl flex items-center gap-2">
-            <img src={logo} alt="Site Logo" className="w-8 h-8 rounded-md" />
-            <Logo />
+          <Link to="/" className="btn btn-ghost  normal-case text-xl flex items-center gap-2">
+          
+           <span className='hidden md:block lg:block'>
+             <Logo />
+           </span>
           </Link>
         </div>
 
-        <div className="navbar-center hidden lg:flex">
+        <div className="navbar-center hidden lg:flex ">
           <ul className="menu menu-horizontal px-1">{Links}</ul>
         </div>
 
@@ -75,12 +90,14 @@ const Navbar = () => {
                   className="tooltip tooltip-bottom"
                   data-tip={user.displayName || "User"}
                 >
-                  <img
+                <div className='hidden lg:block md:block'>
+                    <img
                     src={user.photoURL}
                     alt="User"
                     onClick={() => setIsModalOpen(true)}
                     className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer"
                   />
+                </div>
                 </div>
               )}
 
@@ -89,9 +106,9 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <div className="space-x-2">
-              <Link to="/register"><button className="btn btn-sm">Register</button></Link>
-              <Link to="/sign"><button className="btn btn-sm">Sign In</button></Link>
+            <div className="space-x-2 flex">
+              <Link to="/register"><button className="btn btn-sm lg:text-2xl">Register</button></Link>
+              <Link to="/sign"><button className="btn btn-sm w-20 lg:w-full lg:text-2xl">Sign In</button></Link>
             </div>
           )}
         </div>

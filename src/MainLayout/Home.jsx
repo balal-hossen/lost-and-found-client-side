@@ -6,6 +6,8 @@ import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { Authcontex } from '../AuthContext';
+import groovyWalkAnimation from '../../src/assets/animetion/ani.json.json';
+import Lottie from 'lottie-react';
 
 const Home = () => {
   const [items, setItems] = useState([]);
@@ -15,7 +17,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/items/home`)
+      .get(`https://lost-and-found-hazel.vercel.app/items/home`)
       .then(res => {
         console.log("API response from /items/home:", res.data);
         if (Array.isArray(res.data)) {
@@ -27,7 +29,7 @@ const Home = () => {
       })
       .catch(err => {
         console.error("Error fetching items:", err);
-        setItems([]); // error এ খালি array
+        setItems([]); // error
       });
   }, []);
 
@@ -114,7 +116,11 @@ const Home = () => {
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500 mt-10">No items found.</p>
+            <p className="text-center ml-33 lg:ml-73  text-3xl text-gray-500 mt-10 flex">No items found..
+             <div className="text-center lg:text-left">
+          <Lottie style={{ width: '200px' }} animationData={groovyWalkAnimation} loop={true} />
+        </div>
+            </p>
           )}
         </div>
 

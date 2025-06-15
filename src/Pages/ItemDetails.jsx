@@ -1,5 +1,3 @@
-// src/pages/ItemDetails.jsx
-
 import { useContext, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -20,9 +18,11 @@ const ItemDetails = () => {
   const [recoveredDate, setRecoveredDate] = useState(new Date());
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/items/${id}`).then((res) => {
-      setItem(res.data);
-    });
+    axios
+      .get(`https://lost-and-found-hazel.vercel.app/items/${id}`)
+      .then((res) => {
+        setItem(res.data);
+      });
   }, [id]);
 
   const handleSubmit = async (e) => {
@@ -43,16 +43,23 @@ const ItemDetails = () => {
     };
 
     try {
-      await axios.post("http://localhost:5000/recovered", recoveryInfo);
-      await axios.patch(`http://localhost:5000/items/${item._id}`, {
+      // 1. Save recovery info (Must include withCredentials)
+      await axios.post("https://lost-and-found-hazel.vercel.app/recovered", recoveryInfo, {
+        withCredentials: true,
+      });
+
+      // 2. Update item status and recovered fields
+      await axios.patch(`https://lost-and-found-hazel.vercel.app/items/${item._id}`, {
         status: "recovered",
+        recoveredLocation,
+        recoveredDate,
       });
 
       alert("Item marked as recovered!");
       setModalIsOpen(false);
-      setItem({ ...item, status: "recovered" });
+      setItem({ ...item, status: "recovered", recoveredLocation, recoveredDate });
 
-      navigate("/");
+      navigate("/allrecoverd");
     } catch (error) {
       console.error(error);
       alert("Failed to recover item");
@@ -63,8 +70,10 @@ const ItemDetails = () => {
 
   if (item.status === "recovered") {
     return (
-      <div className="text-center mt-10 text-red-500 text-xl font-semibold">
-        This item is already marked as recovered.
+      <div className="text-center mt-10 text-green-600 text-lg font-semibold space-y-2">
+        <p>This item is already marked as recovered.</p>
+        <p><strong>Recovered Location:</strong> {item.recoveredLocation}</p>
+        <p><strong>Recovered Date:</strong> {item.recoveredDate?.slice(0, 10)}</p>
       </div>
     );
   }
@@ -72,8 +81,8 @@ const ItemDetails = () => {
   const buttonText = item.type === "Lost" ? "Found This!" : "This is Mine!";
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <div className="bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+    <div className="max-w-4xl mx-auto p-8">
+      <div className="bg-white rounded-xl mt-20 p-10 shadow-2xl overflow-hidden flex flex-col md:flex-row">
         <div className="md:w-1/2">
           <img
             src={item.thumbnail}

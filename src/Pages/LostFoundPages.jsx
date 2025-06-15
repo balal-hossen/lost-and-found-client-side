@@ -10,16 +10,15 @@ const LostFoundPages = () => {
   const { user } = useContext(Authcontex);
   console.log('token firebase token',user.accessToken)
 
-  useEffect(() => {
-    if (user?.email) {
-      axios
-        .get(`http://localhost:5000/items?email=${user.email}`)
-        .then((res) => {
-          setAllItems(res.data);
-        })
-        .catch((err) => console.error("Axios Error:", err));
-    }
-  }, [user]);
+ useEffect(() => {
+  axios
+    .get(`https://lost-and-found-hazel.vercel.app/items`)
+    .then((res) => {
+      setAllItems(res.data);
+    })
+    .catch((err) => console.error("Axios Error:", err));
+}, []);
+
 
   return (
     <div className="container mx-auto px-4 py-8">

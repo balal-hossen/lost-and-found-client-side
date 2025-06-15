@@ -6,17 +6,17 @@ const AllRecovered = () => {
   const { user } = useContext(Authcontex);
   const [recoveredItems, setRecoveredItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isTableView, setIsTableView] = useState(false); // Toggle layout
+  const [isTableView, setIsTableView] = useState(false); // Layout toggle
 
   useEffect(() => {
     if (!user?.email) return;
 
     axios
-      .get(`http://localhost:5000/recovered?email=${user.email}`, {
-        withCredentials: 'include'
+      .get(`https://lost-and-found-hazel.vercel.app/recovered?email=${user.email}`, {
+        withCredentials: true
       })
       .then((res) => {
-        setRecoveredItems(res.data);
+        setRecoveredItems(res.data || []);
         setLoading(false);
       })
       .catch((err) => {
@@ -29,9 +29,9 @@ const AllRecovered = () => {
     return <div className="text-center mt-10">Loading...</div>;
   }
 
-  if (recoveredItems.length === 0) {
+  if (!recoveredItems.length) {
     return (
-      <div className="text-center mt-10 text-gray-500">
+      <div className="text-center mt-10 text-gray-500 text-lg">
         No recovered items found for your account.
       </div>
     );
@@ -45,14 +45,13 @@ const AllRecovered = () => {
         <button
           onClick={() => setIsTableView(!isTableView)}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          aria-label="Toggle layout view"
         >
           Change Layout
         </button>
       </div>
 
       {isTableView ? (
-        // Table Layout with responsive overflow-x and smaller font on mobile
+        // Table Layout
         <div className="overflow-x-auto rounded-lg shadow-md">
           <table className="min-w-full bg-white border text-black rounded-lg">
             <thead className="bg-blue-100">
@@ -65,26 +64,23 @@ const AllRecovered = () => {
             </thead>
             <tbody>
               {recoveredItems.map((item) => (
-                <tr
-                  key={item._id}
-                  className="hover:bg-blue-50 text-sm sm:text-base"
-                >
-                  <td className="py-2 px-4 border whitespace-nowrap">{item.title}</td>
-                  <td className="py-2 px-4 border whitespace-nowrap">{item.recoveredLocation}</td>
-                  <td className="py-2 px-4 border whitespace-nowrap">{item.recoveredBy?.name || 'N/A'}</td>
-                  <td className="py-2 px-4 border whitespace-nowrap">{item.recoveredDate?.slice(0, 10)}</td>
+                <tr key={item._id} className="hover:bg-blue-50 text-sm sm:text-base">
+                  <td className="py-2 px-4 border">{item.title}</td>
+                  <td className="py-2 px-4 border">{item.recoveredLocation}</td>
+                  <td className="py-2 px-4 border">{item.recoveredBy?.name || 'N/A'}</td>
+                  <td className="py-2 px-4 border">{item.recoveredDate?.slice(0, 10)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       ) : (
-        // Card Layout responsive grid: 1 col mobile, 2 sm, 3 md+, gap 6
+        // Card Layout
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {recoveredItems.map((item) => (
             <div
               key={item._id}
-              className="bg-white text-black shadow-md rounded-lg p-5 border hover:shadow-lg transition flex flex-col"
+              className="bg-white text-black shadow-md rounded-lg p-5 border hover:shadow-lg transition"
             >
               <h3 className="text-lg font-semibold mb-3 truncate">{item.title}</h3>
               <p className="mb-1"><span className="font-medium">Location:</span> {item.recoveredLocation}</p>
