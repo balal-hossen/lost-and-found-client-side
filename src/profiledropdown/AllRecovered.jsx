@@ -1,19 +1,21 @@
 import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { Authcontex } from '../AuthContext';
+import { AiOutlineMenu, AiOutlineTable } from "react-icons/ai";
 
 const AllRecovered = () => {
   const { user } = useContext(Authcontex);
   const [recoveredItems, setRecoveredItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isTableView, setIsTableView] = useState(false); // Layout toggle
+
+  const [isTableView, setIsTableView] = useState(false); // false = card view
 
   useEffect(() => {
     if (!user?.email) return;
 
     axios
       .get(`https://lost-and-found-hazel.vercel.app/recovered?email=${user.email}`, {
-        withCredentials: true
+        withCredentials: true,
       })
       .then((res) => {
         setRecoveredItems(res.data || []);
@@ -25,9 +27,7 @@ const AllRecovered = () => {
       });
   }, [user?.email]);
 
-  if (loading) {
-    return <div className="text-center mt-10">Loading...</div>;
-  }
+  if (loading) return <div className="text-center mt-10">Loading...</div>;
 
   if (!recoveredItems.length) {
     return (
@@ -39,19 +39,43 @@ const AllRecovered = () => {
 
   return (
     <div className="max-w-6xl mx-auto mt-10 px-4 my-20">
-      <h2 className="text-2xl font-bold mb-6 text-center">My Recovered Items</h2>
 
-      <div className="text-center mb-6">
-        <button
-          onClick={() => setIsTableView(!isTableView)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-        >
-          Change Layout
-        </button>
+
+      {/* Header and view buttons */}
+      
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">My Recovered Items</h2>
+        <div className="flex space-x-3 mr-4">
+          {/* Card View Button */}
+          <button
+            onClick={() => setIsTableView(false)}
+            className={`p-2 rounded-full transition ${
+              !isTableView ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'
+            }`}
+            title="Card View"
+          >
+            <AiOutlineTable size={20} />
+            
+          </button>
+          {/* Table View Button */}
+          <button
+            onClick={() => setIsTableView(true)}
+            className={`p-2 rounded-full transition ${
+              isTableView ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'
+            }`}
+            title="Table View"
+          >
+              <AiOutlineMenu size={20} />
+            
+          </button>
+        </div>
+
+
       </div>
 
+      {/* Conditional View */}
       {isTableView ? (
-        // Table Layout
+        // Table View
         <div className="overflow-x-auto rounded-lg shadow-md">
           <table className="min-w-full bg-white border text-black rounded-lg">
             <thead className="bg-blue-100">
@@ -75,7 +99,7 @@ const AllRecovered = () => {
           </table>
         </div>
       ) : (
-        // Card Layout
+        // Card View
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {recoveredItems.map((item) => (
             <div

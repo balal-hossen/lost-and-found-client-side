@@ -116,7 +116,7 @@ const Home = () => {
               </div>
             ))
           ) : (
-            <p className="text-center ml-33 lg:ml-73  text-3xl text-gray-500 mt-10 flex">No items found..
+            <p className="text-center ml-33 lg:ml-3  text-3xl text-gray-500 mt-10 flex">No items found..
              <div className="text-center lg:text-left">
           <Lottie style={{ width: '200px' }} animationData={groovyWalkAnimation} loop={true} />
         </div>
