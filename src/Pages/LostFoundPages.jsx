@@ -8,7 +8,7 @@ const LostFoundPages = () => {
   const [allItems, setAllItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("desc"); // default latest first
 
   const navigate = useNavigate();
   const { user } = useContext(Authcontex);
@@ -23,7 +23,6 @@ const LostFoundPages = () => {
       .catch((err) => console.error("Axios Error:", err));
   }, []);
 
-  // Filter + Sort combined
   useEffect(() => {
     const lowerText = searchText.toLowerCase();
     let matched = allItems.filter(
@@ -32,12 +31,14 @@ const LostFoundPages = () => {
         item.location?.toLowerCase().includes(lowerText)
     );
 
-    // Sort by price ascending / descending (assumed item.price exists)
+    // date অনুসারে sort করা হচ্ছে
     matched.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
       if (sortOrder === "asc") {
-        return a.price - b.price;
+        return dateA - dateB;  // পুরাতন থেকে নতুন
       } else {
-        return b.price - a.price;
+        return dateB - dateA;  // নতুন থেকে পুরাতন
       }
     });
 
@@ -69,62 +70,59 @@ const LostFoundPages = () => {
           onChange={(e) => setSortOrder(e.target.value)}
           className="px-4 py-2 border rounded text-black"
         >
-          <option value="asc">Sort by Price: Low to High</option>
-          <option value="desc">Sort by Price: High to Low</option>
+          <option value="desc">Sort by Date: Newest First</option>
+          <option value="asc">Sort by Date: Oldest First</option>
         </select>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
-        {filteredItems.length > 0 ? (
-          filteredItems.map((item) => (
-            <div
-              key={item._id}
-              className="bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:scale-105 flex flex-col"
-              style={{ aspectRatio: "4 / 5" }}
-            >
-              <img
-                src={item.thumbnail}
-                alt={item.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4 space-y-2 flex flex-col flex-grow">
-                <h3 className="text-xl font-semibold text-gray-800">{item.title}</h3>
+      {filteredItems.map((item) => (
+  <div
+    key={item._id}
+    className="bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:scale-105 flex flex-col"
+  >
+    <div className="overflow-hidden">
+      <img
+        src={item.thumbnail}
+        alt={item.title}
+        className="w-full object-cover transition-transform duration-300 hover:scale-110"
+        style={{ maxHeight: "250px", width: "100%" }}
+      />
+    </div>
+    <div className="p-4 space-y-2 flex flex-col flex-grow">
+      <h3 className="text-xl font-semibold text-gray-800">{item.title}</h3>
 
-                <p className="text-gray-600 text-sm flex-grow">
-                  {item.description?.slice(0, 80)}...
-                </p>
+      <p className="text-gray-600 text-sm flex-grow">
+        {item.description?.slice(0, 80)}...
+      </p>
 
-                <div className="flex justify-between text-gray-500 text-sm font-bold">
-                  <p>{item.location}</p>
-                  <p>{new Date(item.date).toLocaleDateString()}</p>
-                </div>
+      <div className="flex justify-between text-gray-500 text-sm font-bold">
+        <p>{item.location}</p>
+        <p>{new Date(item.date).toLocaleDateString()}</p>
+      </div>
 
-                <p
-                  className={`inline-block px-2 py-1 text-xs rounded mt-2 ${
-                    item.status === "recovered"
-                      ? "bg-gray-300 text-gray-800 font-bold"
-                      : item.postType === "Lost"
-                      ? "bg-red-100 text-red-600 font-bold"
-                      : "bg-green-100 text-green-600"
-                  }`}
-                >
-                  {item.status === "recovered" ? "Recovered" : item.postType}
-                </p>
+      <p
+        className={`inline-block px-2 py-1 text-xs rounded mt-2 ${
+          item.status === "recovered"
+            ? "bg-gray-300 text-gray-800 font-bold"
+            : item.postType === "Lost"
+            ? "bg-red-100 text-red-600 font-bold"
+            : "bg-green-100 text-green-600"
+        }`}
+      >
+        {item.status === "recovered" ? "Recovered" : item.postType}
+      </p>
 
-                <button
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full mt-4"
-                  onClick={() => navigate(`/itemdetail/${item._id}`)}
-                >
-                  See More
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-center col-span-3 text-gray-500">
-            কোনো আইটেম পাওয়া যায়নি।
-          </p>
-        )}
+      <button
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full mt-4"
+        onClick={() => navigate(`/itemdetail/${item._id}`)}
+      >
+        View Details
+      </button>
+    </div>
+  </div>
+))}
+
       </div>
     </div>
   );
