@@ -1,4 +1,5 @@
 
+import { Helmet } from "react-helmet-async";
 import { Link, useLoaderData, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 
@@ -38,6 +39,10 @@ const UpdateItem = () => {
 
   return (
     <div className="p-4 max-w-xl mx-auto">
+       <Helmet>
+        <title>Update | WhereIsIt</title>
+        <meta name="description" content="Your recovered items list in WhereIsIt platform." />
+      </Helmet>
       <h2 className="text-xl font-bold mb-4">Update Item</h2>
       <form onSubmit={handleUpdate} className="space-y-4">
         <input type="text" name="title" defaultValue={item.title} placeholder="Title" className="input input-bordered w-full" required />

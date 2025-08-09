@@ -6,7 +6,7 @@ import Footer from '../NavLink/Footer';
 
 const MainLayout = () => {
     return (
-        <div>
+        <div className='bg-gray-200'>
             <Navbar/>
             <Outlet/>
            <Footer/>

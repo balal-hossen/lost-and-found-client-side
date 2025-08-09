@@ -5,7 +5,7 @@ import {
 } from "react-router";
 import MainLayout from '../MainLayout/MainLayout';
 import Home from '../MainLayout/Home';
-import Register from '../ScoileLink/Register';
+
 import SignIn from '../ScoileLink/SignIn';
 //import ErrorPages from '../ScoileLink/ErrorPages';
 import PrivetsRoutes from '../PrivetsRoutes';
@@ -16,6 +16,9 @@ import LostFoundPages from '../Pages/LostFoundPages';
 import ItemDetails from '../Pages/ItemDetails';
 import UpdateItem from '../profiledropdown/UpdateItem';
 import ErrorPages from '../ScoileLink/ErrorPages';
+import Register from '../ScoileLink/Register';
+import About from '../Pages/About';
+
 
 const Router = createBrowserRouter([
   {
@@ -26,6 +29,10 @@ const Router = createBrowserRouter([
       {
         index: true,
         Component: Home
+      },
+      {
+        path:'about',
+        Component:About
       },
       {
         path: 'addlost',
@@ -39,7 +46,10 @@ const Router = createBrowserRouter([
         path: 'manage',
         element: <PrivetsRoutes><ManageMyItem /></PrivetsRoutes>
       },
-
+{
+path:'details/id',
+element:<PrivetsRoutes><ItemDetails></ItemDetails></PrivetsRoutes>
+},
       {
         path: '/updateItems/:id',
         element: <PrivetsRoutes><UpdateItem></UpdateItem></PrivetsRoutes>,
@@ -55,10 +65,10 @@ const Router = createBrowserRouter([
         path: '/itemdetail/:id',
         Component: ItemDetails
       },
-      {
-        path: 'register',
-        Component: Register
-      },
+    {
+      path:'register',
+      Component:Register
+    },
       {
         path: 'sign',
         Component: SignIn

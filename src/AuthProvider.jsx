@@ -1,6 +1,4 @@
-// AuthProvider.jsx (অংশ)
-
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   createUserWithEmailAndPassword, 
   onAuthStateChanged, 
@@ -9,7 +7,6 @@ import {
   GoogleAuthProvider,
   signInWithPopup
 } from 'firebase/auth';
-
 import { auth } from './firebase.config';
 import axios from 'axios';
 import { Authcontex } from './AuthContext';
@@ -40,18 +37,14 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, currentUser => {
       setUser(currentUser);
       setLoading(false);
 
       if (currentUser && currentUser.email) {
         axios.post('https://lost-and-found-hazel.vercel.app/jwt', { email: currentUser.email }, { withCredentials: true })
-          .then(res => {
-            console.log('JWT set!', res);
-          })
-          .catch(err => {
-            console.error('JWT error:', err);
-          });
+          .then(res => console.log('JWT set!', res))
+          .catch(err => console.error('JWT error:', err));
       }
     });
 
@@ -69,9 +62,9 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <Authcontex value={userInfo}>
-        {children}
-    </Authcontex>
+    <Authcontex.Provider value={userInfo}>
+      {children}
+    </Authcontex.Provider>
   );
 };
 

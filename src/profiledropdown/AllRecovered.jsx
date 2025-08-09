@@ -2,6 +2,8 @@ import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { Authcontex } from '../AuthContext';
 import { AiOutlineMenu, AiOutlineTable } from "react-icons/ai";
+import { Helmet } from 'react-helmet-async';
+
 
 const AllRecovered = () => {
   const { user } = useContext(Authcontex);
@@ -39,10 +41,12 @@ const AllRecovered = () => {
 
   return (
     <div className="max-w-6xl mx-auto mt-10 px-4 my-20">
-
+       <Helmet>
+        <title>All Recovered Items | WhereIsIt</title>
+        <meta name="description" content="Your recovered items list in WhereIsIt platform." />
+      </Helmet>
 
       {/* Header and view buttons */}
-      
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">My Recovered Items</h2>
         <div className="flex space-x-3 mr-4">
@@ -55,7 +59,6 @@ const AllRecovered = () => {
             title="Card View"
           >
             <AiOutlineTable size={20} />
-            
           </button>
           {/* Table View Button */}
           <button
@@ -65,12 +68,9 @@ const AllRecovered = () => {
             }`}
             title="Table View"
           >
-              <AiOutlineMenu size={20} />
-            
+            <AiOutlineMenu size={20} />
           </button>
         </div>
-
-
       </div>
 
       {/* Conditional View */}

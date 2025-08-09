@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router';
 import { Authcontex } from '../AuthContext';
 import groovyWalkAnimation from '../../src/assets/animetion/ani.json.json';
 import Lottie from 'lottie-react';
+import { Helmet } from 'react-helmet';
+import Reviews from '../Pages/Reviews';
 
 const Home = () => {
   const [items, setItems] = useState([]);
@@ -19,18 +21,13 @@ const Home = () => {
     axios
       .get(`https://lost-and-found-hazel.vercel.app/items/home`)
       .then(res => {
-        console.log("API response from /items/home:", res.data);
         if (Array.isArray(res.data)) {
           setItems(res.data);
         } else {
-          console.error("Expected array but got:", res.data);
-          setItems([]); // fallback empty array
+          setItems([]);
         }
       })
-      .catch(err => {
-        console.error("Error fetching items:", err);
-        setItems([]); // error
-      });
+      .catch(() => setItems([]));
   }, []);
 
   const filteredItems = Array.isArray(items)
@@ -42,9 +39,13 @@ const Home = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>WhereIsIt | Home</title>
+      </Helmet>
+
       <BannerSlider />
 
-      <div className="container mx-auto px-4 py-10">
+      <div className="container  mx-auto px-4 py-10">
         <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
           Lost & Found Items
         </h2>
@@ -55,7 +56,7 @@ const Home = () => {
             placeholder="Search by title or location..."
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
-            className="w-full max-w-md px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+            className="w-full max-w-md px-4 py-2 text-black border rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
           />
         </div>
 
@@ -64,51 +65,55 @@ const Home = () => {
             filteredItems.map(item => (
               <div
                 key={item._id}
-                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition"
+                className="bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg md:hover:scale-[1]  lg:hover:scale-[1.06] flex flex-col"
+                style={{ minHeight: '400px' }}
               >
-                <img
-                  src={item.thumbnail}
-                  alt={item.title}
-                  className="w-full h-48 object-cover"
-                />
+                <div className="h-48 w-full overflow-hidden">
+                  <img
+                    src={item.thumbnail}
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-300"
+                  />
+                </div>
 
-                <div className="p-4 space-y-2">
-                  <h3 className="text-xl font-semibold text-gray-800">{item.title}</h3>
-                  <p className="text-gray-600 text-sm">
-                    {item.description?.slice(0, 80)}...
-                  </p>
+                <div className="p-4 flex flex-col flex-grow">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">{item.title}</h3>
 
-                  <p className="text-gray-500 text-sm">{item.location}</p>
+                  
+                   <div className='flex justify-between'>
+                  <p className="text-gray-500 text-sm font-bold ">{item.location}</p>
                   <p className="text-gray-500 text-sm">
                     {new Date(item.date).toLocaleDateString()}
                   </p>
+                  
+                  </div>
 
                   <p
-                    className={`inline-block px-2 py-1 text-xs rounded ${
+                    className={`inline-block px-2 py-1 text-xs rounded mt-2 ${
                       item.status === "recovered"
-                        ? "bg-gray-300 text-gray-800"
+                        ? "bg-gray-300 font-bold text-gray-800"
                         : item.postType === "Lost"
-                        ? "bg-red-100 text-red-600"
+                        ? "bg-red-100 text-2xl text-red-600 font-bold"
                         : "bg-green-100 text-green-600"
                     }`}
                   >
                     {item.status === "recovered" ? "Recovered" : item.postType}
                   </p>
 
-                  <div className="pt-2">
+                  <div className="pt-4">
                     {user ? (
                       <button
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full transition"
                         onClick={() => navigate(`/itemdetail/${item._id}`)}
                       >
                         View Details
                       </button>
                     ) : (
                       <button
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full transition"
                         onClick={() => navigate(`/sign?redirect=/itemdetail/${item._id}`)}
                       >
-                        View Details
+                        See More
                       </button>
                     )}
                   </div>
@@ -116,17 +121,17 @@ const Home = () => {
               </div>
             ))
           ) : (
-            <p className="text-center ml-33 lg:ml-3  text-3xl text-gray-500 mt-10 flex">No items found..
-             <div className="text-center lg:text-left">
-          <Lottie style={{ width: '200px' }} animationData={groovyWalkAnimation} loop={true} />
-        </div>
-            </p>
+            <div className="flex flex-col items-center justify-center mt-10">
+              <p className="text-3xl text-gray-500 mb-6">No items found..</p>
+              <Lottie style={{ width: '200px' }} animationData={groovyWalkAnimation} loop={true} />
+            </div>
           )}
         </div>
 
         <LatestItems />
         <div className="mt-14">
           <ExtraSection />
+          <Reviews/>
           <ExtraSectionTwo />
         </div>
       </div>

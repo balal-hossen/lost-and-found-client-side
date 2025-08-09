@@ -7,7 +7,8 @@ import ScoilLogin from './ScoilLogin';
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+import SignInGoogle from '../../../../assignments12/Medical-Camp-Management/src/LoginPages/SignInGoogle';
 
 const Register = () => {
   const { create } = useContext(Authcontex);
@@ -95,7 +96,10 @@ const Register = () => {
         </button>
               </fieldset>
             </form>
-            <ScoilLogin />
+            <p className='text-center'>  Already have an account?
+            <Link className='underline text-red-600 font-bold' to='/sign'> Sign In</Link>
+            </p>
+            <SignInGoogle/>
           </div>
         </div>
       </div>

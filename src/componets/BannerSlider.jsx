@@ -1,21 +1,17 @@
-// src/components/BannerSlider.jsx
-
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const slides = [
   {
     id: 1,
-      img: "https://i.ibb.co/1f3gQy3v/img1.jpg",
+    img: "https://i.ibb.co/1f3gQy3v/img1.jpg", // make sure all images are same ratio (e.g., 16:9)
     title: "Lost Something?",
     subtitle: "We help you reconnect with what matters.",
     animation: { x: 0, y: -100 }, // top
-    
   },
   {
     id: 2,
     img: "https://i.ibb.co/D3YQt8j/img2.jpg",
-  
     title: "Found an Item?",
     subtitle: "Post it and help someone smile again.",
     animation: { x: -100, y: 0 }, // left
@@ -49,11 +45,13 @@ const BannerSlider = () => {
   const { img, title, subtitle, animation } = slides[current];
 
   return (
-    <div className="relative  border-red-500 w-full h-[500px] overflow-hidden rounded-xl shadow-md">
+    <div className="relative w-full overflow-hidden  shadow-md"
+         style={{aspectRatio: "16 / 9", maxHeight: "600px"}}>
       <img
         src={img}
         alt="Banner"
         className="w-full h-full object-cover brightness-75"
+        loading="lazy"
       />
       <motion.div
         key={current}
@@ -62,8 +60,8 @@ const BannerSlider = () => {
         transition={{ duration: 1 }}
         className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4"
       >
-        <h2 className="text-4xl md:text-5xl font-bold mb-4">{title}</h2>
-        <p className="text-lg md:text-xl">{subtitle}</p>
+        <h2 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">{title}</h2>
+        <p className="text-lg md:text-xl drop-shadow-md">{subtitle}</p>
       </motion.div>
     </div>
   );

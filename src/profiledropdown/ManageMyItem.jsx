@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Authcontex } from "../AuthContext";
-import { Link } from "react-router";
+import { Link } from "react-router"; 
+import { Helmet } from "react-helmet-async";
 
 const ManageMyItem = () => {
   const { user } = useContext(Authcontex);
@@ -10,14 +11,12 @@ const ManageMyItem = () => {
   const fetchMyItems = () => {
     fetch(`https://lost-and-found-hazel.vercel.app/items?email=${user?.email}`, {
       method: "GET",
-      credentials: "include", // JWT Cookie 
+      credentials: "include", // JWT Cookie
     })
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
           setMyItems(data);
-        } else if (Array.isArray(data?.data)) {
-          setMyItems(data.data);
         } else {
           setMyItems([]);
         }
@@ -37,21 +36,25 @@ const ManageMyItem = () => {
   const handleDelete = (id) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "This item will be permanently deleted!",
+      text: "You won’t be able to undo this!",
       icon: "warning",
       showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(`https://lost-and-found-hazel.vercel.app/items/${id}`, {
           method: "DELETE",
-          credentials: "include", // Cookie
+          credentials: "include",
         })
           .then((res) => res.json())
           .then((data) => {
             if (data.deletedCount > 0) {
-              Swal.fire("Deleted!", "Item has been deleted.", "success");
-              fetchMyItems();
+              Swal.fire("Deleted!", "Your item has been deleted successfully.", "success");
+              //  Remove from state
+              const remaining = myItems.filter((item) => item._id !== id);
+              setMyItems(remaining);
             }
           });
       }
@@ -66,6 +69,10 @@ const ManageMyItem = () => {
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
+       <Helmet>
+        <title>Manage Items | WhereIsIt</title>
+        <meta name="description" content="Your recovered items list in WhereIsIt platform." />
+      </Helmet>
       <h2 className="text-2xl font-bold mb-6 text-center">Manage My Items</h2>
 
       {myItems.length === 0 ? (
@@ -88,7 +95,7 @@ const ManageMyItem = () => {
                 {myItems.map((item) => (
                   <tr
                     key={item._id}
-                    className="text-center border-t border-gray-300 hover:bg-green-500"
+                    className="text-center border-t border-gray-300 hover:bg-green-50"
                   >
                     <td className="px-4 py-2 border border-gray-300 text-left">{item.title}</td>
                     <td className="px-4 py-2 border border-gray-300 text-left">{item.category}</td>
@@ -125,16 +132,9 @@ const ManageMyItem = () => {
                 className="bg-white text-black shadow rounded p-4 border border-gray-300"
               >
                 <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-                <p>
-                  <strong>Category:</strong> {item.category}
-                </p>
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <span className="capitalize">{item.status}</span>
-                </p>
-                <p>
-                  <strong>Date:</strong> {formatDate(item.date)}
-                </p>
+                <p><strong>Category:</strong> {item.category}</p>
+                <p><strong>Status:</strong> <span className="capitalize">{item.status}</span></p>
+                <p><strong>Date:</strong> {formatDate(item.date)}</p>
                 <div className="mt-3 flex gap-2">
                   <Link to={`/updateItems/${item._id}`}>
                     <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded transition w-full">

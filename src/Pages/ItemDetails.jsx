@@ -5,6 +5,8 @@ import Modal from "react-modal";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router";
 import { Authcontex } from "../AuthContext";
+import Swal from "sweetalert2";
+import { Helmet } from "react-helmet-async";
 
 Modal.setAppElement("#root");
 
@@ -19,20 +21,32 @@ const ItemDetails = () => {
 
   useEffect(() => {
     axios
-      .get(`https://lost-and-found-hazel.vercel.app/items/${id}`)
+      .get(`https://lost-and-found-hazel.vercel.app/items/${id}`, { withCredentials: true })
       .then((res) => {
         setItem(res.data);
+      })
+      .catch((error) => {
+        console.error(error);
       });
   }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!user) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "You must be logged in to submit recovery info.",
+      });
+      return;
+    }
+
     const recoveryInfo = {
       itemId: item._id,
       title: item.title,
-      image: item.image,
-      type: item.type,
+      thumbnail: item.thumbnail,
+      postType: item.postType,
       recoveredLocation,
       recoveredDate,
       recoveredBy: {
@@ -43,45 +57,71 @@ const ItemDetails = () => {
     };
 
     try {
-      // 1. Save recovery info (Must include withCredentials)
-      await axios.post("https://lost-and-found-hazel.vercel.app/recovered", recoveryInfo, {
-        withCredentials: true,
+      // Save recovery info with credentials for JWT cookie
+      await axios.post(
+        "https://lost-and-found-hazel.vercel.app/recovered",
+        recoveryInfo,
+        { withCredentials: true }
+      );
+
+      // Update item status and recovered fields with JWT middleware
+      await axios.patch(
+        `https://lost-and-found-hazel.vercel.app/items/${item._id}`,
+        {
+          status: "recovered",
+          recoveredLocation,
+          recoveredDate,
+        },
+        { withCredentials: true }
+      );
+
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Item marked as recovered!",
+        timer: 2000,
+        showConfirmButton: false,
       });
 
-      // 2. Update item status and recovered fields
-      await axios.patch(`https://lost-and-found-hazel.vercel.app/items/${item._id}`, {
-        status: "recovered",
-        recoveredLocation,
-        recoveredDate,
-      });
-
-      alert("Item marked as recovered!");
       setModalIsOpen(false);
       setItem({ ...item, status: "recovered", recoveredLocation, recoveredDate });
 
       navigate("/allrecoverd");
     } catch (error) {
       console.error(error);
-      alert("Failed to recover item");
+      Swal.fire({
+        icon: "error",
+        title: "Failed",
+        text: "Failed to recover item. Please try again.",
+      });
     }
   };
 
-  if (!item || !user) return <div className="text-center mt-10">Loading...</div>;
+  if (!item) return <div className="text-center mt-10">Loading...</div>;
 
   if (item.status === "recovered") {
     return (
       <div className="text-center mt-10 text-green-600 text-lg font-semibold space-y-2">
         <p>This item is already marked as recovered.</p>
-        <p><strong>Recovered Location:</strong> {item.recoveredLocation}</p>
-        <p><strong>Recovered Date:</strong> {item.recoveredDate?.slice(0, 10)}</p>
+        <p>
+          <strong>Recovered Location:</strong> {item.recoveredLocation}
+        </p>
+        <p>
+          <strong>Recovered Date:</strong>{" "}
+          {item.recoveredDate ? new Date(item.recoveredDate).toLocaleDateString() : ""}
+        </p>
       </div>
     );
   }
 
-  const buttonText = item.type === "Lost" ? "Found This!" : "This is Mine!";
+  const buttonText = item.postType === "Lost" ? "Found This!" : "This is Mine!";
 
   return (
     <div className="max-w-4xl mx-auto p-8">
+       <Helmet>
+        <title>Details Items | WhereIsIt</title>
+        <meta name="description" content="Your recovered items list in WhereIsIt platform." />
+      </Helmet>
       <div className="bg-white rounded-xl mt-20 p-10 shadow-2xl overflow-hidden flex flex-col md:flex-row">
         <div className="md:w-1/2">
           <img
@@ -92,10 +132,12 @@ const ItemDetails = () => {
         </div>
         <div className="p-6 md:w-1/2 space-y-2">
           <p className="text-xl font-bold text-gray-700">{item.title}</p>
-          <h2 className="text-md text-gray-600">{item.description}</h2>
+          <p className="text-md text-gray-600">{item.description}</p>
           <p className="text-sm text-gray-500">Category: {item.category}</p>
           <p className="text-sm text-gray-500">Location: {item.location}</p>
-          <p className="text-sm text-gray-500">Date: {item.date}</p>
+          <p className="text-sm text-gray-500">
+            Date: {new Date(item.date).toLocaleDateString()}
+          </p>
           <p className="text-sm text-gray-500">Post Type: {item.postType}</p>
           <p className="text-sm font-semibold text-blue-700">Status: {item.status}</p>
 
