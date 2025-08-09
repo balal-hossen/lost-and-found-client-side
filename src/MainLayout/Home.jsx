@@ -91,9 +91,9 @@ const Home = () => {
                   <p
                     className={`inline-block px-2 py-1 text-xs rounded mt-2 ${
                       item.status === "recovered"
-                        ? "bg-gray-300 font-bold text-gray-800"
+                        ? "bg-gray-300 font-bold text-center text-gray-800"
                         : item.postType === "Lost"
-                        ? "bg-red-100 text-2xl text-red-600 font-bold"
+                        ? "bg-red-100 text-2xl text-red-600 text-center font-bold"
                         : "bg-green-100 text-green-600"
                     }`}
                   >

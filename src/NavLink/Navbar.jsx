@@ -1,11 +1,34 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Authcontex } from "../AuthContext";
 import { Link, NavLink } from 'react-router';
 import Logo from './Logo';
+import Speech from 'speak-tts';
 
 const Navbar = () => {
   const { user, signout } = useContext(Authcontex);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [speech, setSpeech] = useState(null);
+
+  // speak-tts init
+  useEffect(() => {
+    const speechInstance = new Speech();
+    if(speechInstance.hasBrowserSupport()) {
+      speechInstance.init({
+        volume: 1,
+        lang: 'en-US',
+        rate: 1,
+        pitch: 1,
+        voice:'Google US English',
+        splitSentences: true,
+      }).then(() => {
+        setSpeech(speechInstance);
+      }).catch(e => {
+        console.error("Speech initialization failed:", e);
+      });
+    } else {
+      console.warn("Speech synthesis not supported");
+    }
+  }, []);
 
   const handleSignOut = () => {
     signout()
@@ -17,19 +40,40 @@ const Navbar = () => {
       });
   };
 
+  // function to speak text
+  const speakText = (text) => {
+    if(speech) {
+      speech.speak({
+        text: text,
+      }).catch(e => {
+        console.error("Speech error:", e);
+      });
+    }
+  };
+
   const Links = (
-    <div className="gap-2 lg:flex text-white flex flex-col lg:flex-row">
-      <NavLink to="/" className={({ isActive }) =>
-        isActive ? "text-yellow-300 font-bold underline block py-2"
-          : "text-white font-bold block py-2"}>
+    <div className="gap-6 lg:flex text-white flex flex-col lg:flex-row">
+      <NavLink 
+        to="/" 
+        className={({ isActive }) =>
+          isActive ? "text-yellow-300 font-bold underline block py-2"
+          : "text-white font-bold block py-2"
+        }
+        onClick={() => speakText('Home')}
+      >
         <span className='lg:text-xl'> Home</span>
       </NavLink>
      
       {user && (
         <>
-          <NavLink to="/lostpages" className={({ isActive }) =>
-            isActive ? "text-yellow-300 font-bold underline block py-2"
-              : "text-white font-bold block py-2"}>
+          <NavLink 
+            to="/lostpages" 
+            className={({ isActive }) =>
+              isActive ? "text-yellow-300 font-bold underline block py-2"
+              : "text-white font-bold block py-2"
+            }
+            onClick={() => speakText('Lost and Found Items')}
+          >
             <span className='lg:text-xl'>Lost & Found Items</span>
           </NavLink>
 
@@ -40,7 +84,10 @@ const Navbar = () => {
                 <img
                   src={user.photoURL}
                   alt="User"
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    speakText('User profile');
+                  }}
                   className="w-8 h-8 ml-12 rounded-full border border-gray-300 md:hidden cursor-pointer"
                 />
                 <div className="absolute left-1/2 -translate-x-1/2 top-10 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap z-50">
@@ -51,11 +98,16 @@ const Navbar = () => {
           </div>
         </>
       )}
-       <NavLink to="/about" className={({ isActive }) =>
-        isActive ? "text-yellow-300 font-bold underline block py-2"
-          : "text-white font-bold block py-2"}>
-        <span className='lg:text-xl'> About</span>
-      </NavLink>
+       <NavLink 
+         to="/about" 
+         className={({ isActive }) =>
+           isActive ? "text-yellow-300 font-bold underline block py-2"
+           : "text-white font-bold block py-2"
+         }
+         onClick={() => speakText('About')}
+       >
+         <span className='lg:text-xl '> About</span>
+       </NavLink>
 
     </div>
   );
@@ -101,7 +153,10 @@ const Navbar = () => {
                     <img
                       src={user.photoURL}
                       alt="User"
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => {
+                        setIsModalOpen(true);
+                        speakText('User profile');
+                      }}
                       className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer"
                     />
                     <div className="absolute left-1/2 -translate-x-1/2 mt-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-nowrap">
@@ -116,8 +171,8 @@ const Navbar = () => {
               </>
             ) : (
               <div className="space-x-2 flex">
-                <Link to="/register"><button className="btn btn-sm  lg:text-md text-white">Register</button></Link>
-                <Link to="/sign"><button className="btn btn-sm w-20 lg:w-full lg:text-md text-white">Sign In</button></Link>
+                <Link to="/register"><button className="btn btn-sm  lg:text-md text-white" onClick={() => speakText('Register')}>Register</button></Link>
+                <Link to="/sign"><button className="btn btn-sm w-20 lg:w-full lg:text-md text-white" onClick={() => speakText('Sign In')}>Sign In</button></Link>
               </div>
             )}
           </div>
@@ -131,7 +186,10 @@ const Navbar = () => {
           w-full max-w-xs lg:w-72`}
       >
         <button
-          onClick={() => setIsModalOpen(false)}
+          onClick={() => {
+            setIsModalOpen(false);
+            speakText('Close sidebar');
+          }}
           className="absolute top-3 right-4 text-2xl text-gray-500 hover:text-black"
         >
           &times;
@@ -149,18 +207,21 @@ const Navbar = () => {
 
             <div className="space-y-3.5">
               <Link to='/addlost'>
-                <button className='btn w-full'>Add Lost & Found Item</button>
+                <button className='btn w-full' onClick={() => speakText('Add Lost and Found Item')}>Add Lost & Found Item</button>
               </Link>
               <Link to='/allrecoverd'>
-                <button className='btn w-full mt-2'>All Recovered Items</button>
+                <button className='btn w-full mt-2' onClick={() => speakText('All Recovered Items')}>All Recovered Items</button>
               </Link>
               <Link to='/manage'>
-                <button className='btn w-full mt-2'>Manage My Items</button>
+                <button className='btn w-full mt-2' onClick={() => speakText('Manage My Items')}>Manage My Items</button>
               </Link>
             </div>
 
             <button
-              onClick={handleSignOut}
+              onClick={() => {
+                handleSignOut();
+                speakText('Logging out');
+              }}
               className="btn mt-4 btn-error w-full"
             >
               Logout

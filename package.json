@@ -28,6 +28,7 @@
         "react-modal": "^3.16.3",
         "react-router": "^7.6.1",
         "react-simple-typewriter": "^5.0.1",
+        "speak-tts": "^2.0.8",
         "sweetalert2": "^11.22.0",
         "tailwindcss": "^4.1.8"
     },

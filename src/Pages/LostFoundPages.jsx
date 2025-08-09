@@ -46,7 +46,7 @@ const LostFoundPages = () => {
   }, [searchText, allItems, sortOrder]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container  mx-auto px-4 py-8">
       <Helmet>
         <title>Lost & Found Items | WhereIsIt</title>
         <meta name="description" content="সব Lost & Found items দেখুন এবং খুঁজুন।" />
@@ -92,9 +92,7 @@ const LostFoundPages = () => {
     <div className="p-4 space-y-2 flex flex-col flex-grow">
       <h3 className="text-xl font-semibold text-gray-800">{item.title}</h3>
 
-      <p className="text-gray-600 text-sm flex-grow">
-        {item.description?.slice(0, 80)}...
-      </p>
+      
 
       <div className="flex justify-between text-gray-500 text-sm font-bold">
         <p>{item.location}</p>
@@ -104,9 +102,9 @@ const LostFoundPages = () => {
       <p
         className={`inline-block px-2 py-1 text-xs rounded mt-2 ${
           item.status === "recovered"
-            ? "bg-gray-300 text-gray-800 font-bold"
+            ? "bg-gray-300 text-gray-800 text-center font-bold"
             : item.postType === "Lost"
-            ? "bg-red-100 text-red-600 font-bold"
+            ? "bg-red-100 text-red-600 text-center font-bold"
             : "bg-green-100 text-green-600"
         }`}
       >
