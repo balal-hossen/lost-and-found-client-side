@@ -79,13 +79,13 @@ const LostFoundPages = () => {
           placeholder="Title বা Location দিয়ে খুঁজুন..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          className="px-4 py-2 w-full md:w-1/2 border rounded text-black"
+          className="px-4 py-2 w-full md:w-1/2 border rounded bg-white text-black"
         />
 
         <select
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
-          className="px-4 py-2 border rounded text-black"
+          className="px-4 py-2 border rounded bg-white text-black"
         >
           <option value="desc">Sort by Date: Newest First</option>
           <option value="asc">Sort by Date: Oldest First</option>

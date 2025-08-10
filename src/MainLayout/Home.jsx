@@ -62,6 +62,7 @@ const Home = () => {
         <title>WhereIsIt | Home</title>
       </Helmet>
 
+
       <BannerSlider />
 
       <div className="container mx-auto px-4 py-10">

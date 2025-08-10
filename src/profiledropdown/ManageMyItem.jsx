@@ -7,8 +7,10 @@ import { Helmet } from "react-helmet-async";
 const ManageMyItem = () => {
   const { user } = useContext(Authcontex);
   const [myItems, setMyItems] = useState([]);
+  const [loading, setLoading] = useState(false); // loading state
 
   const fetchMyItems = () => {
+    setLoading(true);  // fetch শুরুতে loading true
     fetch(`https://lost-and-found-hazel.vercel.app/items?email=${user?.email}`, {
       method: "GET",
       credentials: "include", // JWT Cookie
@@ -24,6 +26,9 @@ const ManageMyItem = () => {
       .catch((err) => {
         console.error("Error fetching items:", err);
         setMyItems([]);
+      })
+      .finally(() => {
+        setLoading(false); // fetch শেষে loading false
       });
   };
 
@@ -68,20 +73,48 @@ const ManageMyItem = () => {
   };
 
   return (
-    <div className="p-4 max-w-7xl mx-auto">
-       <Helmet>
+    <div className="p-4 max-w-7xl mx-auto  min-h-screen">
+      <Helmet>
         <title>Manage Items | WhereIsIt</title>
         <meta name="description" content="Your recovered items list in WhereIsIt platform." />
       </Helmet>
-      <h2 className="text-2xl font-bold mb-6 text-black text-center">Manage My Items</h2>
 
-      {myItems.length === 0 ? (
+      <h2 className="text-2xl font-bold mb-6 text-shadow-orange-400 text-center">
+        Manage My Items
+      </h2>
+
+      {loading ? (
+        <div className="flex justify-center items-center my-20">
+          {/* Tailwind CSS spinner */}
+          <svg
+            className="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-600"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            ></path>
+          </svg>
+          <span className="text-blue-600 font-semibold text-lg">Loading...</span>
+        </div>
+      ) : myItems.length === 0 ? (
         <p className="text-center text-gray-500">You haven’t added any items yet.</p>
       ) : (
         <>
           {/* big screen */}
           <div className="hidden md:block overflow-x-auto rounded shadow-md text-black">
-            <table className="table-auto w-full border-collapse border text-black border-gray-300">
+            <table className="table-auto w-full border-collapse border text-blue-700 font-bold border-gray-300">
               <thead>
                 <tr className="bg-gray-200 text-black">
                   <th className="px-4 py-3 border border-gray-300 text-left">Title</th>
@@ -132,9 +165,15 @@ const ManageMyItem = () => {
                 className="bg-white text-black shadow rounded p-4 border border-gray-300"
               >
                 <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-                <p><strong>Category:</strong> {item.category}</p>
-                <p><strong>Status:</strong> <span className="capitalize">{item.status}</span></p>
-                <p><strong>Date:</strong> {formatDate(item.date)}</p>
+                <p>
+                  <strong>Category:</strong> {item.category}
+                </p>
+                <p>
+                  <strong>Status:</strong> <span className="capitalize">{item.status}</span>
+                </p>
+                <p>
+                  <strong>Date:</strong> {formatDate(item.date)}
+                </p>
                 <div className="mt-3 flex gap-2">
                   <Link to={`/updateItems/${item._id}`}>
                     <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded transition w-full">
