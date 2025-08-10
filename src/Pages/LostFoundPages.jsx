@@ -9,6 +9,7 @@ const LostFoundPages = () => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("desc"); // default latest first
+  const [loading, setLoading] = useState(true); // 🔹 loading state
 
   const navigate = useNavigate();
   const { user } = useContext(Authcontex);
@@ -19,8 +20,12 @@ const LostFoundPages = () => {
       .then((res) => {
         setAllItems(res.data);
         setFilteredItems(res.data);
+        setLoading(false); // 🔹 ডাটা আসলে লোডিং বন্ধ
       })
-      .catch((err) => console.error("Axios Error:", err));
+      .catch((err) => {
+        console.error("Axios Error:", err);
+        setLoading(false); // 🔹 error হলেও লোডিং বন্ধ
+      });
   }, []);
 
   useEffect(() => {
@@ -36,17 +41,29 @@ const LostFoundPages = () => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
       if (sortOrder === "asc") {
-        return dateA - dateB;  // পুরাতন থেকে নতুন
+        return dateA - dateB; // পুরাতন থেকে নতুন
       } else {
-        return dateB - dateA;  // নতুন থেকে পুরাতন
+        return dateB - dateA; // নতুন থেকে পুরাতন
       }
     });
 
     setFilteredItems(matched);
   }, [searchText, allItems, sortOrder]);
 
+  // 🔹 loading চলাকালে spinner দেখাও
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center text-black min-h-screen">
+        <span className="loading loading-spinner text-blue-500 loading-lg"></span><span className="loading loading-bars loading-xs"></span>
+<span className="loading loading-bars loading-sm"></span>
+<span className="loading loading-bars loading-md"></span>
+<span className="loading loading-bars loading-lg"></span>
+<span className="loading loading-bars loading-xl"></span> </div>
+    );
+  }
+
   return (
-    <div className="container  mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8">
       <Helmet>
         <title>Lost & Found Items | WhereIsIt</title>
         <meta name="description" content="সব Lost & Found items দেখুন এবং খুঁজুন।" />
@@ -76,51 +93,48 @@ const LostFoundPages = () => {
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
-      {filteredItems.map((item) => (
-  <div
-    key={item._id}
-    className="bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:scale-105 flex flex-col"
-  >
-    <div className="overflow-hidden">
-      <img
-        src={item.thumbnail}
-        alt={item.title}
-        className="w-full object-cover transition-transform duration-300 hover:scale-110"
-        style={{ maxHeight: "250px", width: "100%" }}
-      />
-    </div>
-    <div className="p-4 space-y-2 flex flex-col flex-grow">
-      <h3 className="text-xl font-semibold text-gray-800">{item.title}</h3>
+        {filteredItems.map((item) => (
+          <div
+            key={item._id}
+            className="bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:scale-105 flex flex-col"
+          >
+            <div className="overflow-hidden">
+              <img
+                src={item.thumbnail}
+                alt={item.title}
+                className="w-full object-cover transition-transform duration-300 hover:scale-110"
+                style={{ maxHeight: "250px", width: "100%" }}
+              />
+            </div>
+            <div className="p-4 space-y-2 flex flex-col flex-grow">
+              <h3 className="text-xl font-semibold text-gray-800">{item.title}</h3>
 
-      
+              <div className="flex justify-between text-gray-500 text-sm font-bold">
+                <p>{item.location}</p>
+                <p>{new Date(item.date).toLocaleDateString()}</p>
+              </div>
 
-      <div className="flex justify-between text-gray-500 text-sm font-bold">
-        <p>{item.location}</p>
-        <p>{new Date(item.date).toLocaleDateString()}</p>
-      </div>
+              <p
+                className={`inline-block px-2 py-1 text-xs rounded mt-2 ${
+                  item.status === "recovered"
+                    ? "bg-gray-300 text-gray-800 text-center font-bold"
+                    : item.postType === "Lost"
+                    ? "bg-red-100 text-red-600 text-center font-bold"
+                    : "bg-green-100 text-green-600"
+                }`}
+              >
+                {item.status === "recovered" ? "Recovered" : item.postType}
+              </p>
 
-      <p
-        className={`inline-block px-2 py-1 text-xs rounded mt-2 ${
-          item.status === "recovered"
-            ? "bg-gray-300 text-gray-800 text-center font-bold"
-            : item.postType === "Lost"
-            ? "bg-red-100 text-red-600 text-center font-bold"
-            : "bg-green-100 text-green-600"
-        }`}
-      >
-        {item.status === "recovered" ? "Recovered" : item.postType}
-      </p>
-
-      <button
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full mt-4"
-        onClick={() => navigate(`/itemdetail/${item._id}`)}
-      >
-        View Details
-      </button>
-    </div>
-  </div>
-))}
-
+              <button
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full mt-4"
+                onClick={() => navigate(`/itemdetail/${item._id}`)}
+              >
+                View Details
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -73,15 +73,15 @@ const ManageMyItem = () => {
         <title>Manage Items | WhereIsIt</title>
         <meta name="description" content="Your recovered items list in WhereIsIt platform." />
       </Helmet>
-      <h2 className="text-2xl font-bold mb-6 text-center">Manage My Items</h2>
+      <h2 className="text-2xl font-bold mb-6 text-black text-center">Manage My Items</h2>
 
       {myItems.length === 0 ? (
         <p className="text-center text-gray-500">You haven’t added any items yet.</p>
       ) : (
         <>
           {/* big screen */}
-          <div className="hidden md:block overflow-x-auto rounded shadow-md">
-            <table className="table-auto w-full border-collapse border border-gray-300">
+          <div className="hidden md:block overflow-x-auto rounded shadow-md text-black">
+            <table className="table-auto w-full border-collapse border text-black border-gray-300">
               <thead>
                 <tr className="bg-gray-200 text-black">
                   <th className="px-4 py-3 border border-gray-300 text-left">Title</th>

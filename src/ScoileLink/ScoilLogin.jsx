@@ -1,12 +1,13 @@
-import React, { useContext } from 'react';
+
 import { useNavigate, useLocation } from 'react-router';
 import Swal from 'sweetalert2';
-import { Authcontex } from '../AuthContext';
+
 import { FcGoogle } from "react-icons/fc";
+import { useAuth } from '../AuthContext';
 
 
 const ScoilLogin = () => {
-  const { signInWithGoogle } = useContext(Authcontex);
+  const { signInWithGoogle } =useAuth()
   const navigate = useNavigate();
   const location = useLocation();
   const from = new URLSearchParams(location.search).get('redirect') || '/';

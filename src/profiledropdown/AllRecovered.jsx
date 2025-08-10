@@ -40,81 +40,85 @@ const AllRecovered = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto mt-10 px-4 my-20">
-       <Helmet>
-        <title>All Recovered Items | WhereIsIt</title>
-        <meta name="description" content="Your recovered items list in WhereIsIt platform." />
-      </Helmet>
+<div className="max-w-6xl mx-auto mt-10 px-4 my-20 min-h-[calc(100vh-4rem)]">
+  {/* min-h-[calc(100vh-4rem)] — Full viewport height থেকে navbar/footer এর উচ্চতা বাদ দিয়ে content */}
+  {/* যদি Footer এর উচ্চতা 4rem ধরে নেই */}
 
-      {/* Header and view buttons */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">My Recovered Items</h2>
-        <div className="flex space-x-3 mr-4">
-          {/* Card View Button */}
-          <button
-            onClick={() => setIsTableView(false)}
-            className={`p-2 rounded-full transition ${
-              !isTableView ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'
-            }`}
-            title="Card View"
-          >
-            <AiOutlineTable size={20} />
-          </button>
-          {/* Table View Button */}
-          <button
-            onClick={() => setIsTableView(true)}
-            className={`p-2 rounded-full transition ${
-              isTableView ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'
-            }`}
-            title="Table View"
-          >
-            <AiOutlineMenu size={20} />
-          </button>
-        </div>
-      </div>
+  <Helmet>
+    <title>All Recovered Items | WhereIsIt</title>
+    <meta name="description" content="Your recovered items list in WhereIsIt platform." />
+  </Helmet>
 
-      {/* Conditional View */}
-      {isTableView ? (
-        // Table View
-        <div className="overflow-x-auto rounded-lg shadow-md">
-          <table className="min-w-full bg-white border text-black rounded-lg">
-            <thead className="bg-blue-100">
-              <tr>
-                <th className="py-2 px-4 border text-left">Title</th>
-                <th className="py-2 px-4 border text-left">Location</th>
-                <th className="py-2 px-4 border text-left">Recovered By</th>
-                <th className="py-2 px-4 border text-left">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recoveredItems.map((item) => (
-                <tr key={item._id} className="hover:bg-blue-50 text-sm sm:text-base">
-                  <td className="py-2 px-4 border">{item.title}</td>
-                  <td className="py-2 px-4 border">{item.recoveredLocation}</td>
-                  <td className="py-2 px-4 border">{item.recoveredBy?.name || 'N/A'}</td>
-                  <td className="py-2 px-4 border">{item.recoveredDate?.slice(0, 10)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        // Card View
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {recoveredItems.map((item) => (
-            <div
-              key={item._id}
-              className="bg-white text-black shadow-md rounded-lg p-5 border hover:shadow-lg transition"
-            >
-              <h3 className="text-lg font-semibold mb-3 truncate">{item.title}</h3>
-              <p className="mb-1"><span className="font-medium">Location:</span> {item.recoveredLocation}</p>
-              <p className="mb-1"><span className="font-medium">Recovered By:</span> {item.recoveredBy?.name || 'N/A'}</p>
-              <p><span className="font-medium">Date:</span> {item.recoveredDate?.slice(0, 10)}</p>
-            </div>
-          ))}
-        </div>
-      )}
+  {/* Header and view buttons */}
+  <div className="flex justify-between items-center mb-6">
+    <h2 className="text-2xl font-bold text-black">My Recovered Items</h2>
+    <div className="flex space-x-3 mr-4">
+      {/* Card View Button */}
+      <button
+        onClick={() => setIsTableView(false)}
+        className={`p-2 rounded-full transition ${
+          !isTableView ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'
+        }`}
+        title="Card View"
+      >
+        <AiOutlineTable size={20} />
+      </button>
+      {/* Table View Button */}
+      <button
+        onClick={() => setIsTableView(true)}
+        className={`p-2 rounded-full transition ${
+          isTableView ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'
+        }`}
+        title="Table View"
+      >
+        <AiOutlineMenu size={20} />
+      </button>
     </div>
+  </div>
+
+  {/* Conditional View */}
+  {isTableView ? (
+    // Table View
+    <div className="overflow-x-auto rounded-lg shadow-md">
+      <table className="min-w-full bg-white border text-black rounded-lg">
+        <thead className="bg-blue-100">
+          <tr>
+            <th className="py-2 px-4 border text-left">Title</th>
+            <th className="py-2 px-4 border text-left">Location</th>
+            <th className="py-2 px-4 border text-left">Recovered By</th>
+            <th className="py-2 px-4 border text-left">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {recoveredItems.map((item) => (
+            <tr key={item._id} className="hover:bg-blue-50 text-sm sm:text-base">
+              <td className="py-2 px-4 border break-words max-w-xs">{item.title}</td>
+              <td className="py-2 px-4 border break-words max-w-xs">{item.recoveredLocation}</td>
+              <td className="py-2 px-4 border break-words max-w-xs">{item.recoveredBy?.name || 'N/A'}</td>
+              <td className="py-2 px-4 border">{item.recoveredDate?.slice(0, 10)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    // Card View
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {recoveredItems.map((item) => (
+        <div
+          key={item._id}
+          className="bg-white text-black shadow-md rounded-lg p-5 border hover:shadow-lg transition h-full flex flex-col"
+        >
+          <h3 className="text-lg font-semibold mb-3 truncate">{item.title}</h3>
+          <p className="mb-1 flex-grow"><span className="font-medium">Location:</span> {item.recoveredLocation}</p>
+          <p className="mb-1"><span className="font-medium">Recovered By:</span> {item.recoveredBy?.name || 'N/A'}</p>
+          <p><span className="font-medium">Date:</span> {item.recoveredDate?.slice(0, 10)}</p>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
   );
 };
 

@@ -1,14 +1,13 @@
-import React, { useContext } from 'react';
+
 import Lottie from 'lottie-react';
 import groovyWalkAnimation from '../../src/assets/sign/sign.json.json';
-import { Authcontex } from '../AuthContext';
 import ScoilLogin from './ScoilLogin';
-
 import Swal from 'sweetalert2';
 import { Link, useLocation, useNavigate } from 'react-router';
+import { useAuth } from '../AuthContext';
 
 const SignIn = () => {
-  const { signin } = useContext(Authcontex);
+  const { signin } =useAuth()
   const navigate = useNavigate();
   const location = useLocation();
 

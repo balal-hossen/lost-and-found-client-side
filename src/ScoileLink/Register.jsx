@@ -1,17 +1,18 @@
-import React, { useContext, useState } from 'react';
+
 import groovyWalkAnimation from '../../src/assets/register.json.json';
 import Lottie from 'lottie-react';
-import { Authcontex } from '../AuthContext';
+import { Authcontex, useAuth } from '../AuthContext';
 import { updateProfile } from 'firebase/auth';
 import ScoilLogin from './ScoilLogin';
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router';
-import SignInGoogle from '../../../../assignments12/Medical-Camp-Management/src/LoginPages/SignInGoogle';
+//import SignInGoogle from '../../../../assignments12/Medical-Camp-Management/src/LoginPages/SignInGoogle';
+import { useState } from 'react';
 
 const Register = () => {
-  const { create } = useContext(Authcontex);
+  const { create } =useAuth();
   const navigate = useNavigate(); // navigation for after register
    const [showPassword, setShowPassword] = useState(false);
 
@@ -99,7 +100,7 @@ const Register = () => {
             <p className='text-center'>  Already have an account?
             <Link className='underline text-red-600 font-bold' to='/sign'> Sign In</Link>
             </p>
-            <SignInGoogle/>
+       <ScoilLogin/>
           </div>
         </div>
       </div>

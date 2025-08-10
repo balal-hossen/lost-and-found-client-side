@@ -1,11 +1,12 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Authcontex } from "../AuthContext";
+import React, {  useState, useEffect } from 'react';
+
 import { Link, NavLink } from 'react-router';
 import Logo from './Logo';
 import Speech from 'speak-tts';
+import { useAuth } from '../AuthContext';
 
 const Navbar = () => {
-  const { user, signout } = useContext(Authcontex);
+  const { user, signout } = useAuth()
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [speech, setSpeech] = useState(null);
 
@@ -50,6 +51,7 @@ const Navbar = () => {
       });
     }
   };
+
 
   const Links = (
     <div className="gap-6 lg:flex text-white flex flex-col lg:flex-row">

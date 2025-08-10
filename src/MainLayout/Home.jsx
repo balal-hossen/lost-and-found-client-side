@@ -14,6 +14,7 @@ import Reviews from '../Pages/Reviews';
 const Home = () => {
   const [items, setItems] = useState([]);
   const [searchText, setSearchText] = useState('');
+  const [loading, setLoading] = useState(true); // 🔹 loading state
   const navigate = useNavigate();
   const { user } = useContext(Authcontex);
 
@@ -26,8 +27,12 @@ const Home = () => {
         } else {
           setItems([]);
         }
+        setLoading(false); // 🔹 data আসলে loading false হবে
       })
-      .catch(() => setItems([]));
+      .catch(() => {
+        setItems([]);
+        setLoading(false); // 🔹 error হলেও loading বন্ধ হবে
+      });
   }, []);
 
   const filteredItems = Array.isArray(items)
@@ -37,6 +42,20 @@ const Home = () => {
       )
     : [];
 
+  // 🔹 যদি loading থাকে তাহলে spinner দেখাও
+  if (loading) {
+    return (
+      <div className="flex items-center text-black justify-center h-screen">
+     <span className="loading loading-bars loading-xs"></span>
+<span className="loading loading-bars loading-sm"></span>
+<span className="loading loading-bars loading-md"></span>
+<span className="loading loading-bars loading-lg"></span>
+<span className="loading loading-bars loading-xl"></span>
+        <span className="loading loading-spinner text-blue-500 loading-lg"></span>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Helmet>
@@ -45,7 +64,7 @@ const Home = () => {
 
       <BannerSlider />
 
-      <div className="container  mx-auto px-4 py-10">
+      <div className="container mx-auto px-4 py-10">
         <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
           Lost & Found Items
         </h2>
@@ -65,7 +84,7 @@ const Home = () => {
             filteredItems.map(item => (
               <div
                 key={item._id}
-                className="bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg md:hover:scale-[1]  lg:hover:scale-[1.06] flex flex-col"
+                className="bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg md:hover:scale-[1] lg:hover:scale-[1.06] flex flex-col"
                 style={{ minHeight: '400px' }}
               >
                 <div className="h-48 w-full overflow-hidden">
@@ -79,13 +98,11 @@ const Home = () => {
                 <div className="p-4 flex flex-col flex-grow">
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">{item.title}</h3>
 
-                  
-                   <div className='flex justify-between'>
-                  <p className="text-gray-500 text-sm font-bold ">{item.location}</p>
-                  <p className="text-gray-500 text-sm">
-                    {new Date(item.date).toLocaleDateString()}
-                  </p>
-                  
+                  <div className="flex justify-between">
+                    <p className="text-gray-500 text-sm font-bold">{item.location}</p>
+                    <p className="text-gray-500 text-sm">
+                      {new Date(item.date).toLocaleDateString()}
+                    </p>
                   </div>
 
                   <p
@@ -123,7 +140,11 @@ const Home = () => {
           ) : (
             <div className="flex flex-col items-center justify-center mt-10">
               <p className="text-3xl text-gray-500 mb-6">No items found..</p>
-              <Lottie style={{ width: '200px' }} animationData={groovyWalkAnimation} loop={true} />
+              <Lottie
+                style={{ width: '200px' }}
+                animationData={groovyWalkAnimation}
+                loop={true}
+              />
             </div>
           )}
         </div>
@@ -131,7 +152,7 @@ const Home = () => {
         <LatestItems />
         <div className="mt-14">
           <ExtraSection />
-          <Reviews/>
+          <Reviews />
           <ExtraSectionTwo />
         </div>
       </div>
