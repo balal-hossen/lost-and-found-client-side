@@ -16,7 +16,7 @@ const LatestItems = () => {
   }, []);
 
   return (
-    <section className="px-4 md:px-8">
+    <section className="px-4 md:px-8 ">
      
 
       <div className="grid md:grid-cols-3 gap-6">

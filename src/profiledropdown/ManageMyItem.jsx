@@ -1,19 +1,23 @@
 import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Authcontex } from "../AuthContext";
-import { Link } from "react-router"; 
+import { Link } from "react-router";
 import { Helmet } from "react-helmet-async";
 
 const ManageMyItem = () => {
   const { user } = useContext(Authcontex);
   const [myItems, setMyItems] = useState([]);
-  const [loading, setLoading] = useState(false); // loading state
+  const [loading, setLoading] = useState(false);
+
+  // Pagination states
+  const itemsPerPage = 6;
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchMyItems = () => {
-    setLoading(true);  // fetch শুরুতে loading true
+    setLoading(true);
     fetch(`https://lost-and-found-hazel.vercel.app/items?email=${user?.email}`, {
       method: "GET",
-      credentials: "include", // JWT Cookie
+      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
@@ -28,7 +32,8 @@ const ManageMyItem = () => {
         setMyItems([]);
       })
       .finally(() => {
-        setLoading(false); // fetch শেষে loading false
+        setLoading(false);
+        setCurrentPage(1); // Reset page on data load
       });
   };
 
@@ -57,9 +62,11 @@ const ManageMyItem = () => {
           .then((data) => {
             if (data.deletedCount > 0) {
               Swal.fire("Deleted!", "Your item has been deleted successfully.", "success");
-              //  Remove from state
               const remaining = myItems.filter((item) => item._id !== id);
               setMyItems(remaining);
+              // Adjust page if current page is now out of range
+              const maxPage = Math.ceil(remaining.length / itemsPerPage);
+              if (currentPage > maxPage) setCurrentPage(maxPage);
             }
           });
       }
@@ -72,20 +79,22 @@ const ManageMyItem = () => {
     return date.toLocaleDateString();
   };
 
+  // Pagination calculations
+  const totalPages = Math.ceil(myItems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = myItems.slice(startIndex, startIndex + itemsPerPage);
+
   return (
-    <div className="p-4 max-w-7xl mx-auto  min-h-screen">
+    <div className="p-4 max-w-7xl mx-auto min-h-screen flex flex-col">
       <Helmet>
         <title>Manage Items | WhereIsIt</title>
         <meta name="description" content="Your recovered items list in WhereIsIt platform." />
       </Helmet>
 
-      <h2 className="text-2xl font-bold mb-6 text-shadow-orange-400 text-center">
-        Manage My Items
-      </h2>
+      <h2 className="text-2xl font-bold mb-6 text-shadow-orange-400 text-center">Manage My Items</h2>
 
       {loading ? (
         <div className="flex justify-center items-center my-20">
-          {/* Tailwind CSS spinner */}
           <svg
             className="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-600"
             xmlns="http://www.w3.org/2000/svg"
@@ -109,10 +118,11 @@ const ManageMyItem = () => {
           <span className="text-blue-600 font-semibold text-lg">Loading...</span>
         </div>
       ) : myItems.length === 0 ? (
-        <p className="text-center text-gray-500">You haven’t added any items yet.</p>
+        <p className="text-center text-gray-500">You haven’t added any items yet.</p>,
+        <img className="w-full" src="https://i.ibb.co.com/N26zxRzr/original-a7b7223a9d22f6f90015deb8d9ad0d9d.webp" alt="" />
       ) : (
         <>
-          {/* big screen */}
+          {/* big screen table */}
           <div className="hidden md:block overflow-x-auto rounded shadow-md text-black">
             <table className="table-auto w-full border-collapse border text-blue-700 font-bold border-gray-300">
               <thead>
@@ -125,19 +135,15 @@ const ManageMyItem = () => {
                 </tr>
               </thead>
               <tbody>
-                {myItems.map((item) => (
+                {currentItems.map((item) => (
                   <tr
                     key={item._id}
                     className="text-center border-t border-gray-300 hover:bg-green-50"
                   >
                     <td className="px-4 py-2 border border-gray-300 text-left">{item.title}</td>
                     <td className="px-4 py-2 border border-gray-300 text-left">{item.category}</td>
-                    <td className="px-4 py-2 border border-gray-300 text-left capitalize">
-                      {item.status}
-                    </td>
-                    <td className="px-4 py-2 border border-gray-300 text-left">
-                      {formatDate(item.date)}
-                    </td>
+                    <td className="px-4 py-2 border border-gray-300 text-left capitalize">{item.status}</td>
+                    <td className="px-4 py-2 border border-gray-300 text-left">{formatDate(item.date)}</td>
                     <td className="px-4 py-2 border border-gray-300 space-x-2 text-left">
                       <Link to={`/updateItems/${item._id}`}>
                         <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded transition">
@@ -157,9 +163,9 @@ const ManageMyItem = () => {
             </table>
           </div>
 
-          {/* mobile */}
+          {/* mobile cards */}
           <div className="md:hidden grid gap-4">
-            {myItems.map((item) => (
+            {currentItems.map((item) => (
               <div
                 key={item._id}
                 className="bg-white text-black shadow rounded p-4 border border-gray-300"
@@ -190,6 +196,44 @@ const ManageMyItem = () => {
               </div>
             ))}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8 flex justify-center space-x-2 select-none">
+              <button
+                className="px-3 py-1 rounded border border-gray-400 hover:bg-gray-200 disabled:opacity-50"
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </button>
+
+              {[...Array(totalPages)].map((_, i) => {
+                const pageNum = i + 1;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`px-3 py-1 rounded border border-gray-400 hover:bg-gray-200 ${
+                      pageNum === currentPage
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-black"
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+
+              <button
+                className="px-3 py-1 rounded border border-gray-400 hover:bg-gray-200 disabled:opacity-50"
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>

@@ -6,9 +6,11 @@ import Footer from '../NavLink/Footer';
 
 const MainLayout = () => {
     return (
-        <div className='  mix-h-[700px]'>
+        <div className=''>
             <Navbar/>
-            <Outlet/>
+           <main className='' style={{minHeight:'calc(100vh - 130px)'}}>
+             <Outlet/>
+           </main>
            <Footer/>
         </div>
     );

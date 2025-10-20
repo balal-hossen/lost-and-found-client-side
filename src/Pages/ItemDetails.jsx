@@ -88,7 +88,7 @@ const ItemDetails = () => {
       setModalIsOpen(false);
       setItem({ ...item, status: "recovered", recoveredLocation, recoveredDate });
 
-      navigate("/allrecoverd");
+      navigate(-1);
     } catch (error) {
       console.error(error);
       Swal.fire({

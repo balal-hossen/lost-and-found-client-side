@@ -9,7 +9,7 @@ const ExtraSections = () => {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        className="bg-gradient-to-r from-blue-50 to-purple-100 p-6 md:p-10 rounded-3xl shadow-lg"
+        className=" p-6 md:p-10 rounded-3xl shadow-lg"
       >
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 text-indigo-800">
           How It Works
@@ -33,7 +33,7 @@ const ExtraSections = () => {
             <motion.div
               key={idx}
               whileHover={{ scale: 1.05 }}
-              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-6 h-full flex flex-col justify-start"
+              className=" rounded-2xl shadow-md hover:shadow-xl transition p-6 h-full flex flex-col justify-start"
             >
               <h3 className="text-lg sm:text-xl font-semibold text-blue-800 mb-3 text-center">
                 {step.title}
@@ -52,7 +52,7 @@ const ExtraSections = () => {
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        className="bg-gradient-to-r from-green-50 to-teal-100 p-6 md:p-10 rounded-3xl shadow-lg"
+        className="p-6 md:p-10 rounded-3xl shadow-lg"
       >
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 text-green-800">
           Why Choose Us?
@@ -69,7 +69,7 @@ const ExtraSections = () => {
               key={idx}
               whileHover={{ rotate: [0, -2, 2, -2, 0] }}
               transition={{ duration: 0.5 }}
-              className="bg-white rounded-2xl shadow-md hover:shadow-xl p-6 h-full flex items-center justify-center"
+              className=" rounded-2xl shadow-md hover:shadow-xl p-6 h-full flex items-center justify-center"
             >
               <p className="text-base sm:text-lg font-medium text-green-700 text-center leading-snug">
                 {reason}

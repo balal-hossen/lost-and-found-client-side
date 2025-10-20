@@ -31,7 +31,7 @@ const AllRecovered = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh]">
+      <div className="flex flex-col items-center justify-center min-h-[80vh]">
         <svg
           className="animate-spin h-12 w-12 text-blue-600 mb-3"
           xmlns="http://www.w3.org/2000/svg"
@@ -56,17 +56,20 @@ const AllRecovered = () => {
       </div>
     );
   }
-
-  if (!recoveredItems.length) {
-    return (
-      <div className="text-center mt-10 text-gray-500 text-lg">
+if (!recoveredItems.length) {
+  return (
+    <div className="max-w-7xl mx-auto min-h-[calc(100vh-8rem)] items-center justify-center px-4">
+    <h1 className='text-center text-2xl font-bold mt-20'> Recovered items</h1>
+      <p className="text-gray-500 text-lg text-center">
         No recovered items found for your account.
-      </div>
-    );
-  }
+      </p>
+      <img className=' w-full' src='https://i.ibb.co.com/N26zxRzr/original-a7b7223a9d22f6f90015deb8d9ad0d9d.webp' alt='' />
+    </div>
+  );
+}
 
   return (
-    <div className="max-w-7xl mx-auto mt-10 px-4 my-20  min-h-screen">
+    <div className="max-w-7xl mx-auto min-h-[calc(100vh-8rem)] mt-10 px-4 my-20  ">
       {/* min-h-[calc(100vh-4rem)] — Full viewport height থেকে navbar/footer এর উচ্চতা বাদ দিয়ে content */}
       {/* যদি Footer এর উচ্চতা 4rem ধরে নেই */}
 

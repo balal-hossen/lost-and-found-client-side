@@ -68,13 +68,13 @@ const AddLost = () => {
 
         <div className="flex flex-col">
           <label className="mb-1">Date</label>
-          <DatePicker selected={selectedDate} onChange={(date) => setSelectedDate(date)} className="border p-2 rounded" />
+          <DatePicker selected={selectedDate} onChange={(date) => setSelectedDate(date)} className="border w-full p-2 rounded" />
         </div>
 
         <input value={user.displayName} readOnly className="w-full border p-2 rounded bg-gray-100" />
         <input value={user.email} readOnly className="w-full border p-2 rounded bg-gray-100" />
 
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button type="submit" className="bg-blue-500 w-full text-white px-4 py-2 rounded">
           Add Post
         </button>
       </form>
