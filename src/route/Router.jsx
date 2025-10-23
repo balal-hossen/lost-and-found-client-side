@@ -23,15 +23,16 @@ import AdminProtect from '../admindashboard/AdminProtect';
 
 // Protected wrapper
 import PrivetsRoutes from '../PrivetsRoutes';
-import ManageUser from '../admindashboard/ManageUser';
+//import ManageUser from '../admindashboard/ManageUser';
 import ManageItem from '../admindashboard/ManageItem';
 import Feedback from '../admindashboard/Feedback';
+import AdminOverview from '../admindashboard/AdminOverview';
 
 
 // Admin placeholder pages
-const AdminOverview = () => <h1 className="text-2xl font-bold">Admin Overview</h1>;
-const ManageUsers = () => <h1 className="text-2xl font-bold">Manage Users</h1>;
-const ManageItems = () => <h1 className="text-2xl font-bold">Manage Items</h1>;
+//const AdminOverview = () => <h1 className="text-2xl font-bold">Admin Overviewdfgdf</h1>;
+//const ManageUsers = () => <h1 className="text-2xl font-bold">Manage Users</h1>;
+//const ManageItems = () => <h1 className="text-2xl font-bold">Manage Items</h1>;
 
 const Router = createBrowserRouter([
   // Public & Main Routes
@@ -83,8 +84,8 @@ const Router = createBrowserRouter([
     path: '/admin',
     element: <AdminProtect><AdminLayout /></AdminProtect>,
     children: [
-      { index: true, element: <AdminOverview /> },
-      { path: 'manage-users', element: <ManageUser />},
+      { index: true, element: <AdminOverview/> },
+     // { path: 'manage-users', element: <ManageUser />},
       { path: 'manage-items', element: <ManageItem /> },
        {path: 'feedback', element: <Feedback/>}
     ]
