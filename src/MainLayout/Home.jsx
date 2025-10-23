@@ -21,7 +21,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get(`https://lost-and-found-hazel.vercel.app/items/home`)
+      .get(`http://localhost:5000/items/home`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setItems(res.data);

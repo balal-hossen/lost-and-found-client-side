@@ -15,7 +15,7 @@ const ManageMyItem = () => {
 
   const fetchMyItems = () => {
     setLoading(true);
-    fetch(`https://lost-and-found-hazel.vercel.app/items?email=${user?.email}`, {
+    fetch(`http://localhost:5000/items?email=${user?.email}`, {
       method: "GET",
       credentials: "include",
     })
@@ -54,7 +54,7 @@ const ManageMyItem = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`https://lost-and-found-hazel.vercel.app/items/${id}`, {
+        fetch(`http://localhost:5000/items/${id}`, {
           method: "DELETE",
           credentials: "include",
         })

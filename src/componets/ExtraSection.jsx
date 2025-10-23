@@ -11,7 +11,7 @@ const ExtraSections = () => {
         viewport={{ once: true }}
         className=" p-6 md:p-10 rounded-3xl shadow-lg"
       >
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 text-indigo-800">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8  underline">
           How It Works
         </h2>
 
@@ -35,10 +35,10 @@ const ExtraSections = () => {
               whileHover={{ scale: 1.05 }}
               className=" rounded-2xl shadow-md hover:shadow-xl transition p-6 h-full flex flex-col justify-start"
             >
-              <h3 className="text-lg sm:text-xl font-semibold text-blue-800 mb-3 text-center">
+              <h3 className="text-lg sm:text-xl font-semibold  mb-3 text-center">
                 {step.title}
               </h3>
-              <p className="text-gray-600 text-sm sm:text-base text-center leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base text-center leading-relaxed">
                 {step.desc}
               </p>
             </motion.div>

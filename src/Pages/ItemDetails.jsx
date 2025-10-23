@@ -22,27 +22,21 @@ const ItemDetails = () => {
   const [recoveredDate, setRecoveredDate] = useState(new Date());
 
   useEffect(() => {
-    axios
-      .get(`https://lost-and-found-hazel.vercel.app/items/${id}`, { withCredentials: true })
-      .then((res) => {
+    axios.get(`http://localhost:5000/items/${id}`, { withCredentials: true })
+      .then(res => {
         setItem(res.data);
         setLoading(false);
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(err => {
+        console.error(err);
         setLoading(false);
       });
   }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!user) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "You must be logged in to submit recovery info.",
-      });
+      Swal.fire({ icon: "error", title: "Login required", text: "You must be logged in!" });
       return;
     }
 
@@ -56,208 +50,87 @@ const ItemDetails = () => {
       recoveredBy: {
         name: user.displayName,
         email: user.email,
-        image: user.photoURL,
-      },
+        image: user.photoURL
+      }
     };
 
     try {
-      await axios.post(
-        "https://lost-and-found-hazel.vercel.app/recovered",
-        recoveryInfo,
-        { withCredentials: true }
-      );
-
-      await axios.patch(
-        `https://lost-and-found-hazel.vercel.app/items/${item._id}`,
-        {
-          status: "recovered",
-          recoveredLocation,
-          recoveredDate,
-        },
-        { withCredentials: true }
-      );
+      await axios.post("http://localhost:5000/recovered", recoveryInfo, { withCredentials: true });
+      setItem({ ...item, status: "recovered", recoveredLocation, recoveredDate });
+      setModalIsOpen(false);
 
       Swal.fire({
         icon: "success",
-        title: "Success!",
-        text: "Item marked as recovered!",
+        title: "Recovered!",
+        text: "Item has been marked as recovered.",
         timer: 2000,
-        showConfirmButton: false,
+        showConfirmButton: false
       });
-
-      setModalIsOpen(false);
-      setItem({ ...item, status: "recovered", recoveredLocation, recoveredDate });
-
-      navigate(-1);
-    } catch (error) {
-      console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "Failed",
-        text: "Failed to recover item. Please try again.",
-      });
+    } catch (err) {
+      console.error(err);
+      Swal.fire({ icon: "error", title: "Failed", text: "Could not recover item." });
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-lg text-gray-600">Loading item details...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!item) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
-        Item not found.
-      </div>
-    );
-  }
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
+  if (!item) return <p className="text-center mt-10">Item not found</p>;
 
   if (item.status === "recovered") {
     return (
       <div className="min-h-screen flex items-center justify-center p-6">
         <div className="bg-green-50 border border-green-200 rounded-xl shadow-lg max-w-md w-full p-6 text-center">
-          <img
-            src={item.thumbnail}
-            alt="Recovered Item"
-            className="w-48 h-48 object-cover rounded-lg mx-auto border border-green-300"
-          />
+          <img src={item.thumbnail} alt={item.title} className="w-48 h-48 object-cover mx-auto rounded-lg"/>
           <h2 className="text-2xl font-bold text-green-700 mt-4">{item.title}</h2>
-          <p className="text-gray-600 mt-2">{item.description}</p>
-
-          <div className="mt-4 space-y-2 text-left">
-            <p><strong className="text-green-800">Category:</strong><span className="text-black ml-2 font-bold"> {item.category}</span></p>
-            <p><strong className="text-green-800">Recovered Location:</strong> <span className="text-black ml-2 font-bold">{item.recoveredLocation}</span></p>
-            <p><strong className="text-green-800 ">Recovered Date:</strong><span className="text-black ml-2 font-bold">
-               {item.recoveredDate ? new Date(item.recoveredDate).toLocaleDateString() : ""}
-              </span></p>
-          </div>
-
-          <div className="mt-6">
-            <span className="bg-green-200 text-green-800 px-4 py-1 rounded-full font-semibold text-sm">
-              ✅ Already Recovered
-            </span>
-          </div>
+          <p>{item.description}</p>
+          <p>Recovered Location: {item.recoveredLocation}</p>
+          <p>Recovered Date: {new Date(item.recoveredDate).toLocaleDateString()}</p>
         </div>
       </div>
     );
   }
 
-  const buttonText = item.postType === "Lost" ? "Found This!" : "This is Mine!";
-
   return (
     <div className="max-w-4xl mx-auto p-8 min-h-screen">
       <Helmet>
-        <title>Details Items | WhereIsIt</title>
-        <meta name="description" content="Your recovered items list in WhereIsIt platform." />
+        <title>Item Details | WhereIsIt</title>
       </Helmet>
 
-   <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row hover:shadow-2xl transition-shadow duration-300 mt-20 border border-gray-100">
-  {/* Left Side Image */}
-  <div className="md:w-1/2 relative group">
-    <img
-      src={item.thumbnail}
-      alt={item.title}
-      className="w-full h-72 md:h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-    />
-    {/* Status Badge */}
-    <span
-      className={`absolute top-4 left-4 px-3 py-1 rounded-full text-sm font-semibold shadow-md ${
-        item.status === "recovered"
-          ? "bg-green-100 text-green-700"
-          : item.postType === "Lost"
-          ? "bg-red-100 text-red-600"
-          : "bg-blue-100 text-blue-600"
-      }`}
-    >
-      {item.status === "recovered" ? "Recovered" : item.postType}
-    </span>
-  </div>
-
-  {/* Right Side Text */}
-  <div className="p-8 flex flex-col justify-between md:w-1/2">
-    <div className="space-y-3">
-      <h2 className="text-2xl font-bold text-gray-800">{item.title}</h2>
-      <p className="text-gray-600">{item.description}</p>
-
-      <div className="space-y-1 text-sm text-gray-500">
-        <p><strong>Category:</strong> {item.category}</p>
-        <p><strong>Location:</strong> {item.location}</p>
-        <p>
-          <strong>Date:</strong> {new Date(item.date).toLocaleDateString()}
-        </p>
-        <p><strong>Post Type:</strong> {item.postType}</p>
-        <p>
-          <strong>Status:</strong>{" "}
-          <span className="font-semibold text-blue-700">{item.status}</span>
-        </p>
-      </div>
-    </div>
-
-    {/* Action Button */}
-    <div className="pt-6 text-right">
-      <button
-        onClick={() => setModalIsOpen(true)}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition-all duration-200"
-      >
-        {buttonText}
-      </button>
-    </div>
-  </div>
-</div>
-
-
-      {/* Recovery Modal */}
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOpen(false)}
-        className="bg-white p-6 max-w-lg mx-auto mt-20 rounded shadow-lg border"
-      >
-        <h3 className="text-xl font-semibold mb-4">Recovery Info</h3>
-        <form onSubmit={handleSubmit} className="text-black space-y-4">
+      <div className="bg-white rounded-xl shadow-md flex md:flex-row flex-col">
+        <img src={item.thumbnail} className="md:w-1/2 w-full h-64 object-cover"/>
+        <div className="p-6 md:w-1/2 flex flex-col justify-between">
           <div>
-            <label className="block mb-1 font-medium">Recovered Location:</label>
-            <input
-              type="text"
-              required
-              value={recoveredLocation}
-              onChange={(e) => setRecoveredLocation(e.target.value)}
-              className="w-full border px-3 py-2 rounded"
-              placeholder="e.g. Rangpur Police Station"
-            />
+            <h2 className="text-2xl font-bold">{item.title}</h2>
+            <p>{item.description}</p>
+            <p>Category: {item.category}</p>
+            <p>Location: {item.location}</p>
+            <p>Date: {new Date(item.date).toLocaleDateString()}</p>
+            <p>Status: {item.status}</p>
           </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Recovered Date:</label>
-            <DatePicker
-              selected={recoveredDate}
-              onChange={(date) => setRecoveredDate(date)}
-              className="w-full border text-black px-3 py-2 rounded"
-              dateFormat="yyyy-MM-dd"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Recovered By:</label>
-            <input
-              type="text"
-              readOnly
-              value={`${user.displayName} (${user.email})`}
-              className="w-full border px-3 py-2 bg-gray-100 rounded"
-            />
-          </div>
-
           <button
-            type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+            className="bg-blue-600 text-white px-4 py-2 rounded mt-4"
+            onClick={() => setModalIsOpen(true)}
           >
-            Submit Recovery
+            {item.postType === "Lost" ? "Found This!" : "This is Mine!"}
           </button>
+        </div>
+      </div>
+
+      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} className="bg-white p-6 max-w-lg mx-auto mt-20 rounded shadow-lg border">
+        <h3 className="text-xl font-semibold mb-4">Recovery Info</h3>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label>Recovered Location:</label>
+            <input type="text" value={recoveredLocation} onChange={(e)=>setRecoveredLocation(e.target.value)} className="w-full border px-3 py-2 rounded" required/>
+          </div>
+          <div>
+            <label>Recovered Date:</label>
+            <DatePicker selected={recoveredDate} onChange={(date)=>setRecoveredDate(date)} className="w-full border px-3 py-2 rounded" dateFormat="yyyy-MM-dd"/>
+          </div>
+          <div>
+            <label>Recovered By:</label>
+            <input type="text" readOnly value={`${user.displayName} (${user.email})`} className="w-full border px-3 py-2 rounded bg-gray-100"/>
+          </div>
+          <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Submit Recovery</button>
         </form>
       </Modal>
     </div>

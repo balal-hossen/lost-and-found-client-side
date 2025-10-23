@@ -1,0 +1,86 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+
+const ManageItem = () => {
+  const [items, setItems] = useState([]);
+
+  // ===== fetch approved & pending items =====
+  const fetchItems = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/items", { withCredentials: true });
+      // only pending or approved items
+      const filteredItems = res.data.filter(
+        item => item.status === "pending" 
+      );
+      setItems(filteredItems);
+    } catch (err) {
+      console.error("Fetch items error:", err);
+      Swal.fire("Error", "Could not fetch items", "error");
+    }
+  };
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  if (items.length === 0) {
+    return (
+      <div className="p-6 text-center">
+        <h1 className="text-2xl font-bold mb-4">Items</h1>
+        <p>No pending or approved items found.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6 text-center">Pending Items</h1>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {items.map(item => (
+          <div key={item._id} className="bg-white rounded-2xl shadow-md overflow-hidden border hover:shadow-xl transition-shadow">
+            <img
+              src={item.thumbnail}
+              alt={item.title}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-4">
+              <h2 className="text-xl font-bold text-gray-800">{item.title}</h2>
+              <p className="text-gray-600 mt-1">{item.description}</p>
+              <div className="mt-2 text-sm text-gray-500 space-y-1">
+                <p><strong>Category:</strong> {item.category}</p>
+                <p><strong>Location:</strong> {item.location}</p>
+                <p><strong>Date:</strong> {new Date(item.date).toLocaleDateString()}</p>
+                <p><strong>Post Type:</strong> {item.postType}</p>
+                {item.recoveredLocation && (
+                  <p><strong>Recovered Location:</strong> {item.recoveredLocation}</p>
+                )}
+              </div>
+              <div className="mt-3 flex items-center space-x-2">
+                <img
+                  src={item.userImage}
+                  alt={item.userName}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+                <span className="text-sm font-medium">{item.userName}</span>
+              </div>
+              <div className="mt-3">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    item.status === "approved"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-yellow-100 text-yellow-700"
+                  }`}
+                >
+                  {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ManageItem;

@@ -1,23 +1,20 @@
-// PrivateRoute.jsx
-import { useContext } from "react";
+import React, { useContext } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { Authcontex } from '../AuthContext';
 
-import { useLocation } from "react-router";
-import { Authcontex } from "./AuthContext";
-
-
-const PrivetRoute = ({ children }) => {
+const PrivetsRoutes = ({ children }) => {
   const { user, loading } = useContext(Authcontex);
   const location = useLocation();
 
   if (loading) {
-    return <p className="text-center">Loading...</p>;
+    return <div className="text-center mt-10">Loading...</div>; // loading state
   }
 
   if (!user) {
-    return <Navigate to="/signin" state={{ from: location }} replace />;
+    return <Navigate to={`/sign?redirect=${location.pathname}`} replace />;
   }
 
   return children;
 };
 
-export default PrivetRoute;
+export default PrivetsRoutes;

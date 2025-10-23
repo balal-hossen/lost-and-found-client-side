@@ -20,7 +20,7 @@ const LostFoundPages = () => {
 
   useEffect(() => {
     axios
-      .get(`https://lost-and-found-hazel.vercel.app/items`)
+      .get(`http://localhost:5000/items`)
       .then((res) => {
         setAllItems(res.data);
         setLoading(false);

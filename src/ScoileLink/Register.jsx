@@ -1,106 +1,97 @@
-
-import groovyWalkAnimation from '../../src/assets/register.json.json';
-import Lottie from 'lottie-react';
-import { Authcontex, useAuth } from '../AuthContext';
-import { updateProfile } from 'firebase/auth';
-import ScoilLogin from './ScoilLogin';
-import { FaRegEye } from "react-icons/fa6";
-import { FaRegEyeSlash } from "react-icons/fa6";
-import Swal from 'sweetalert2';
-import { Link, useNavigate } from 'react-router';
-//import SignInGoogle from '../../../../assignments12/Medical-Camp-Management/src/LoginPages/SignInGoogle';
-import { useState } from 'react';
+import Lottie from "lottie-react";
+import groovyWalkAnimation from "../../src/assets/register.json.json";
+import { useAuth } from "../AuthContext";
+import { updateProfile } from "firebase/auth";
+import ScoilLogin from "./ScoilLogin";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import Swal from "sweetalert2";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 
 const Register = () => {
-  const { create } =useAuth();
-  const navigate = useNavigate(); // navigation for after register
-   const [showPassword, setShowPassword] = useState(false);
+  const { create } = useAuth();
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleReg = (e) => {
+  const handleReg = async (e) => {
     e.preventDefault();
     const name = e.target.name.value;
     const photoURL = e.target.photo.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    create(email, password)
-      .then((result) => {
-        return updateProfile(result.user, {
-          displayName: name,
-          photoURL: photoURL,
-        });
-      })
-      .then(() => {
-        // Show success alert
-        Swal.fire({
-          icon: 'success',
-          title: 'Registration Successful!',
-          text: 'Welcome to WhereIsIt!',
-          confirmButtonText: 'Continue',
-        }).then(() => {
-          // Navigate after alert is confirmed
-          navigate('/');
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Registration Failed',
-          text: error.message,
-        });
-        console.error(error);
-      });
+    try {
+      const result = await create(email, password);
+      await updateProfile(result.user, { displayName: name, photoURL });
+
+      const newUser = {
+        name,
+        email,
+        photoURL,
+        role: email === "admin@lostfound.com" ? "admin" : "user",
+      };
+
+      // ✅ Call /auth route
+      await axios.post(
+        "http://localhost:5000/auth",
+        newUser,
+        { withCredentials: true }
+      );
+
+      Swal.fire("Registration Successful!", "Welcome to Lost & Found!", "success");
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Registration Failed", error.message, "error");
+    }
   };
 
   return (
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
-          <Lottie style={{ width: '200px' }} animationData={groovyWalkAnimation} loop={true} />
+          <Lottie style={{ width: "200px" }} animationData={groovyWalkAnimation} loop />
         </div>
-        <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+        <div className="card bg-base-100 w-full max-w-sm shadow-2xl">
           <div className="card-body">
-            <h1 className="text-5xl font-bold">Register now!</h1>
+            <h1 className="text-5xl font-bold">Register</h1>
             <form onSubmit={handleReg}>
-              <fieldset className="fieldset">
-                <label className="label">Name</label>
-                <input type="text" name="name" className="input" placeholder="Name" required />
-                <label className="label">Photo URL</label>
-                <input type="text" name="photo" className="input" placeholder="Photo URL" />
-                <label className="label">Email</label>
-                <input type="email" name="email" className="input" placeholder="Email" required />
-                <label className="label">Password</label>
-               <div className="relative">
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            required
-            minLength="6"
-            pattern="(?=.*[a-z])(?=.*[A-Z]).{6,}"
-            title="Must contain at least 6 characters with uppercase and lowercase"
-            className="w-full px-3 py-2 border rounded"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute top-2.5 right-3 text-gray-600"
-          >
-            {showPassword ?<FaRegEyeSlash /> : <FaRegEye />}
-          </button>
-        </div>
-          <button
-          type="submit"
-          className="bg-green-500 text-white py-2 px-4 rounded w-full mt-4 hover:bg-green-600"
-        >
-          Register
-        </button>
-              </fieldset>
+              <label className="label">Name</label>
+              <input type="text" name="name" className="input input-bordered" required />
+              <label className="label">Photo URL</label>
+              <input type="text" name="photo" className="input input-bordered" />
+              <label className="label">Email</label>
+              <input type="email" name="email" className="input input-bordered" required />
+              <label className="label">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  required
+                  minLength="6"
+                  className="input input-bordered w-full"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute top-3 right-3"
+                >
+                  {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                </button>
+              </div>
+              <button type="submit" className="btn btn-success w-full mt-4">
+                Register
+              </button>
             </form>
-            <p className='text-center'>  Already have an account?
-            <Link className='underline text-red-600 font-bold' to='/sign'> Sign In</Link>
+            <p className="text-center mt-2">
+              Already have an account?{" "}
+              <Link to="/sign" className="underline text-blue-600 font-bold">
+                Sign In
+              </Link>
             </p>
-       <ScoilLogin/>
+            <ScoilLogin />
           </div>
         </div>
       </div>

@@ -21,7 +21,7 @@ const UpdateItem = () => {
       name: form.name.value
     };
 
-    fetch(`https://lost-and-found-hazel.vercel.app/items/${item._id}`, {
+    fetch(`http://localhost:5000/items/${item._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
