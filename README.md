@@ -13,7 +13,7 @@ WhereIsIt is a full-stack lost and found items platform that allows users to rep
 ## 📁 GitHub Repositories
 
 - 🔗 [Client Repository](https://github.com/BELALKHANBK/lost-and-found-client-side)
-- 🔗 [Server Repository](https://github.com/BELALKHANBK/lost-and-found-server-site)
+- 🔗 [Server Repository](https://github.com/balal-hossen/lost-and-found-backend)
 
 ---
 
